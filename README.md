@@ -2,6 +2,9 @@
 
 
 bp_tim_86	hzclBqAznRVxJsQ0
+clanovi tima:
+Mina Kovacevic, RN 88/19
+Tadija Simic, RN 73/19
 
 "Rent-a-Car
 
