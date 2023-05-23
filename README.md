@@ -10,3 +10,6 @@ Tadija Simic, RN 74/19
 "Rent-a-Car
 
 Tipovi i kategorije vozila, cenovnik po godinama, evidencija klijenata i svih njihovih iznajmljenih vozila, sa ili bez vozaca, ..."
+
+
+bp_tim_86	writer	hzclBqAznRVxJsQ0
