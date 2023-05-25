@@ -5,7 +5,7 @@
 <p>To use this projec`t, follow the instructions below:</p>
 <ol>
   <li>Clone the repository to your local machine:</li>
-  <pre><code>git clone [https://github.com/mina-tadija/database-project.git](https://github.com/racunarski-fakultet/bp_projekat-tim_tadijasimic_minakovacevic/edit/main/README.md)</code></pre>
+  <pre><code>git clone https://github.com/racunarski-fakultet/bp_projekat-tim_tadijasimic_minakovacevic</code></pre>
   <li>Set up your MySQL and MongoDB databases:</li>
   <ul>
     <li>Install MySQL and create your MySQL database.</li>
