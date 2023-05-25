@@ -1,4 +1,3 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/6hx3LrEQ)
 
 <h1>Database Project - MySQL to MongoDB Query Translation</h1>
 <p>This project is developed by Mina Kovacevic and Tadija Simic. It aims to provide a tool for parsing MySQL statements, translating them to MongoDB queries, and utilizing JDBC to send the translated queries to MongoDB.</p>
