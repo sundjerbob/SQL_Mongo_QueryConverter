@@ -3,7 +3,6 @@ package raf.project.back_end.parser;
 import raf.project.back_end.lexer.LexerAPI;
 import raf.project.back_end.mapper.ast.ASTNode;
 import raf.project.back_end.mapper.object.nodes.*;
-import raf.project.back_end.parser.object.*;
 import raf.project.back_end.parser.symbol.Symbol;
 
 import java.util.ArrayList;
