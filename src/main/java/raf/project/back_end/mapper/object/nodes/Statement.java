@@ -35,7 +35,12 @@ public class Statement extends ASTNode {
         return this;
     }
 
+    public List<Object> getFromArgs() {
+        return fromArgs;
+    }
 
-
+    public List<Object> getSelectArgs() {
+        return selectArgs;
+    }
 }
 

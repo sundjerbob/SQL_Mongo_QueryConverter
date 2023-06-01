@@ -10,8 +10,10 @@ import java.util.List;
 import java.util.Scanner;
 
 public class App {
+
     public static void main(String[] args) {
-        Test.runTest();
+       // Test.runTest();
+        RepositoryService.executeMQLQuery(null);
     }
 
     private static String readFromConsole() {

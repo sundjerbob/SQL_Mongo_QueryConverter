@@ -17,7 +17,7 @@ public class ASTNode {
     }
 
     public ASTNode(){
-
+        children = new ArrayList<>();
     }
     public TokenTable getTokenType() {
         return tokenType;
