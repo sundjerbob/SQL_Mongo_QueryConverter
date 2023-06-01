@@ -1,0 +1,110 @@
+
+//TODO: ovo je test gramatike bez JOIN-ova i funkcija...zavsiti pravila
+
+mySQL Grammar "Read only"
+- adapted mySQL grammar, equipped for parsing only SELECT operation queries without data manipulation operations
+
+/---------------------------------------------------------------------------------------------\
+|                                         Symbol Table                                        |
++---------------------------------------------------------------------------------------------+
+| Terminal Symbols: SELECT,                    | Non Terminal Symbols: Query,                 |
+|                   DISTINCT,                  |                       Statement,             |
+|                   FROM,                      |                       ClauseList,            |
+|                   WHERE,                     |                       Clause,                |
+|                   JOIN,                      |                       Condition              |
+|                   ON,                        |                       WhereClause,           |
+|                   GROUP,                     |                       GroupByClause,         |
+|                   BY,                        |                       HavingClause,          |
+|                   HAVING,                    |                       OrderByClause,         |
+|                   ORDER,                     |                       Expression,            |
+|                   TABLE_ID,                  |                       LogicExpression,       |
+|                   COLUMN_ID,                 |                       MathExpression,        |
+|                   SEMI_COLUMN,               |                       LogicOperation,        |
+|                   LESS_THAN,                 |                       MathOperation,         |
+|                   LESS_THAN_EQUAL,           |                       NameList,              |
+|                   GREATER,                   |                       Name,                  |
+|                   GREATER_OR_EQUAL,          |                       Variable,              |
+|                   COMMA;                     |                       Constant;              |
+\----------------------------------------------+----------------------------------------------/
+
+
+  | *------------------------------------| Grammar Rules |-----------------------------------------*
+  |
+  | Query ::=
+  |
+  |         Statement SEMI_COLUMN
+  |         |
+  |         Statement Statement SEMI_COLUMN
+
+    +----------------------------------------------------------------------------------------------+
+
+    Statement ::=
+
+            SELECT NameList FROM NameList
+            |
+            SELECT NameList FROM
+
+    +----------------------------------------------------------------------------------------------+
+
+    ClauseList ::=
+
+            Clause
+            |
+            Clause Clause
+
+
+    +----------------------------------------------------------------------------------------------+
+
+    Clause ::=
+
+            WhereClause
+            |
+            GroupByClause
+            |
+            HavingClause
+            |
+            OrderByClose
+
+    +----------------------------------------------------------------------------------------------+
+
+    SelectClause ::=
+
+            SELECT NameList
+
+    +----------------------------------------------------------------------------------------------+
+
+    FromClause ::=
+
+            FROM NameList
+
+    +----------------------------------------------------------------------------------------------+
+
+    WhereClause ::=
+
+            WHERE Condition
+
+    +----------------------------------------------------------------------------------------------+
+
+    GroupByClause ::=
+
+            GROUP BY NameList
+
+    +----------------------------------------------------------------------------------------------+
+
+    HavingClause ::=
+
+            HAVING Condition
+
+    +----------------------------------------------------------------------------------------------+
+
+    OrderByClause ::=
+
+            ORDER BY NameList
+
+
+    +----------------------------------------------------------------------------------------------+
+
+
+
+
+
