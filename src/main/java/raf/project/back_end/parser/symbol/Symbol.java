@@ -5,9 +5,10 @@ import raf.project.back_end.lexer.LexerAPI.*;
 
 public class Symbol {
 
-    public TokenTable tokenType;
+    private TokenTable tokenType;
+    public Symbol next;
 
-    public String value;
+    private String value;
 
     protected Symbol() {}
 
@@ -19,6 +20,10 @@ public class Symbol {
 
     public TokenTable getTokenType() {
         return tokenType;
+    }
+
+    public String getValue() {
+        return value;
     }
 
     @Override

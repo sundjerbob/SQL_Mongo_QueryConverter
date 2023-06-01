@@ -1,5 +1,6 @@
 package raf.project.back_end.lexer;
 
+import raf.project.back_end.parser.symbol.InputSymbolsStack;
 import raf.project.back_end.parser.symbol.Symbol;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 public interface LexerAPI {
 
 
-    List<Symbol> tokenize(String input);
+    InputSymbolsStack tokenize(String input);
 
 
     /**
@@ -88,4 +89,5 @@ public interface LexerAPI {
             return this.name();
         }
     }
+
 }

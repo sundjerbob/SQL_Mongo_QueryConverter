@@ -17,7 +17,6 @@ public class Parser implements ParserAPI {
     LexerAPI lexer;
 
 
-
     /**
      * <code>grammarRules</code> mapping of defined grammar rules.
      * Every rule is represented by a row of the matrix that is an array.
@@ -82,6 +81,11 @@ public class Parser implements ParserAPI {
             /*24*/      {OR, new LogicOperation()}// LogicOperation ::= OR
 
     };
+
+    //reduction lambda function returns newly parsed abstract syntax tree node
+    interface Reduction {
+        ASTNode parseNonTerminalSymbol(int ruleIndex, Object... symbols);
+    }
     Reduction[] reductions = {
 
             /*0*/   (ruleIndex, symbols) -> (symbols[0] instanceof MyQuery) ? (MyQuery) symbols[0] : null,
@@ -90,7 +94,7 @@ public class Parser implements ParserAPI {
 
             /*2*/   (ruleIndex, symbols) -> new MyQuery().addChild((Statement) symbols[0]).addChild((Statement) symbols[1]),
 
-            /*3*/   (ruleIndex, symbols) ->  new Statement().addSelectArgs((List<?>) symbols[1]).addFromArgs((List<?>) symbols[3]),
+            /*3*/   (ruleIndex, symbols) -> new Statement().addSelectArgs((List<?>) symbols[1]).addFromArgs((List<?>) symbols[3]),
 
             /*4*/   (ruleIndex, symbols) -> new Statement().addSelectArgs((List<?>) symbols[1]).addFromArgs((List<?>) symbols[3]).addChild((Clause) symbols[4]),
 
@@ -102,13 +106,13 @@ public class Parser implements ParserAPI {
 
             /*8*/   (ruleIndex, symbols) -> new Condition((Expression) symbols[0]),
 
-            /*9*/   (ruleIndex, symbols) -> new Condition( (Condition) symbols[0], (LogicOperation) symbols[1], (Condition) symbols[2] ),
+            /*9*/   (ruleIndex, symbols) -> new Condition((Condition) symbols[0], (LogicOperation) symbols[1], (Condition) symbols[2]),
 
             /*10*/  (ruleIndex, symbols) -> new Expression((Variable) symbols[0]),
 
             /*11*/  (ruleIndex, symbols) -> new Expression((Constant) symbols[0]),
 
-            /*12*/  (ruleIndex, symbols) -> new Expression((Expression) symbols[0],(MathOperation) symbols[1],(Expression) symbols[2]),
+            /*12*/  (ruleIndex, symbols) -> new Expression((Expression) symbols[0], (MathOperation) symbols[1], (Expression) symbols[2]),
 
             /*13*/  (ruleIndex, symbols) -> new Variable((Symbol) symbols[0]),
 
@@ -144,12 +148,16 @@ public class Parser implements ParserAPI {
     @Override
     public ASTNode parse(List<Symbol> tokens) throws Exception {
 
-        Object[][] mat = new Object[10][];
-
+       /* Object[][] mat = new Object[10][];
         Stack<Object> stack = new Stack<>();
-
-        //for( Symbol token : tokens) {
-
+        stack.push(tokens.get(0));
+        while (!(mat[0][0] instanceof MyQuery)) {
+            for (int ruleIndex = 0; ruleIndex < grammarRules.length; ruleIndex++) {
+                for (Object curr : stack) {
+                    if (grammarRules[ruleIndex][stack.indexOf(curr)])
+                }
+            }
+        }
            /* stack.add(token);
 
                /* for(Object symbol: stack) {
@@ -184,9 +192,4 @@ public class Parser implements ParserAPI {
 
 
 
-
-    //reduction lambda function returns newly parsed abstract syntax tree node
-    interface Reduction {
-        ASTNode parseNonTerminalSymbol(int ruleIndex, Object... symbols);
-    }
 }

@@ -1,20 +1,18 @@
 package raf.project.back_end.lexer;
 
 import org.jetbrains.annotations.NotNull;
+import raf.project.back_end.parser.symbol.InputSymbolsStack;
 import raf.project.back_end.parser.symbol.Symbol;
 import raf.project.error.SyntaxError;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static raf.project.back_end.lexer.LexerAPI.TokenTable.*;
 
 public class Lexer implements LexerAPI {
 
     @Override
-    public List<Symbol> tokenize(@NotNull String input) {
+    public InputSymbolsStack tokenize(@NotNull String input) {
 
-        ArrayList<Symbol> tokenizedInput = new ArrayList<>();
+        InputSymbolsStack tokenizedInput = new InputSymbolsStack();
         StringBuilder lexemeBuilder = new StringBuilder();
         TokenTable token = null;
 
@@ -31,7 +29,7 @@ public class Lexer implements LexerAPI {
                     if((token = matchToken(lexemeBuilder.toString())) != null) {
 
                         // we parsed-tokenized a word into a token-symbol and matched it with its type, now we can add a new symbol for the parser input stream
-                        tokenizedInput.add( new Symbol(token,lexemeBuilder.toString()) );
+                        tokenizedInput.push( new Symbol(token,lexemeBuilder.toString()) );
 
                         // since we tokenized-swallowed a word we need to restart the buffer in lexemeBuilder, so we can parse upcoming word
                         lexemeBuilder.delete(0, lexemeBuilder.length());
@@ -54,7 +52,7 @@ public class Lexer implements LexerAPI {
         if(lexemeBuilder.length() != 0) {
 
             if( ( token = matchToken(lexemeBuilder.toString()) ) != null)
-                tokenizedInput.add(new Symbol(token, lexemeBuilder.toString()) );
+                tokenizedInput.push(new Symbol(token, lexemeBuilder.toString()) );
             else
                 throw new SyntaxError("ne valja");
         }

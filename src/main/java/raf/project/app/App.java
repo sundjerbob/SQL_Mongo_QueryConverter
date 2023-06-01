@@ -4,7 +4,9 @@ import raf.project.back_end.lexer.Lexer;
 import raf.project.back_end.lexer.LexerAPI;
 import raf.project.back_end.parser.Parser;
 import raf.project.back_end.parser.ParserAPI;
+import raf.project.back_end.parser.symbol.InputSymbolsStack;
 import raf.project.back_end.parser.symbol.Symbol;
+import raf.project.error.SyntaxError;
 import raf.project.front_end.MainFrame;
 
 import java.util.List;
@@ -13,9 +15,20 @@ import java.util.Scanner;
 public class App {
 
     public static void main(String[] args) {
-       // Test.runTest();
-        RepositoryService.executeMQLQuery(null);
-        MainFrame mainFrame = new MainFrame();
+        // Test.runTest();
+        // RepositoryService.executeMQLQuery(null);
+        //MainFrame mainFrame = new MainFrame();
+        LexerAPI lexer = new Lexer();
+        String input = readFromConsole();
+       try {
+           System.out.println(lexer.tokenize(input));
+           System.out.println("--------------------------------");
+           System.out.println(lexer.tokenize(input).popAllToStr());
+       }
+       catch (SyntaxError error) {
+           error.printStackTrace();
+       }
+        System.out.println("clean");
     }
 
     private static String readFromConsole() {
@@ -31,4 +44,6 @@ public class App {
         scanner.close();
         return query.toString();
     }
+
+
 }
