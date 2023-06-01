@@ -17,7 +17,6 @@ public class App {
     public static void main(String[] args) {
         // Test.runTest();
         // RepositoryService.executeMQLQuery(null);
-        //MainFrame mainFrame = new MainFrame();
         LexerAPI lexer = new Lexer();
         String input = readFromConsole();
        try {
@@ -29,6 +28,8 @@ public class App {
            error.printStackTrace();
        }
         System.out.println("clean");
+        MainFrame mainFrame = new MainFrame();
+
     }
 
     private static String readFromConsole() {

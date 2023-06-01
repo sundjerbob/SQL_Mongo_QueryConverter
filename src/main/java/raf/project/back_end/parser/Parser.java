@@ -3,6 +3,7 @@ package raf.project.back_end.parser;
 import raf.project.back_end.lexer.LexerAPI;
 import raf.project.back_end.mapper.ast.ASTNode;
 import raf.project.back_end.mapper.ast_object.nodes.*;
+import raf.project.back_end.parser.symbol.InputSymbolsStack;
 import raf.project.back_end.parser.symbol.Symbol;
 
 import java.util.ArrayList;
@@ -146,46 +147,10 @@ public class Parser implements ParserAPI {
 
 
     @Override
-    public ASTNode parse(List<Symbol> tokens) throws Exception {
+    public ASTNode parse(InputSymbolsStack stack) throws Exception {
+        //result of parsing - abstract syntax tree, constantly trying to map new objects from input
+        Object[][] ast = new Object[grammarRules.length][];
 
-       /* Object[][] mat = new Object[10][];
-        Stack<Object> stack = new Stack<>();
-        stack.push(tokens.get(0));
-        while (!(mat[0][0] instanceof MyQuery)) {
-            for (int ruleIndex = 0; ruleIndex < grammarRules.length; ruleIndex++) {
-                for (Object curr : stack) {
-                    if (grammarRules[ruleIndex][stack.indexOf(curr)])
-                }
-            }
-        }
-           /* stack.add(token);
-
-               /* for(Object symbol: stack) {
-
-                    for(int ruleIndex = 0; ruleIndex < grammarRules.length; ruleIndex++) {
-                        // terminal symbol and if it's on the same index of grammar rule as the index in input stream
-                        if(grammarRules[ruleIndex][stack.indexOf(symbol)] instanceof TokenTable &&
-                                grammarRules[ruleIndex][tokens.indexOf(curr)] == curr) {
-                            cursor[ruleIndex]++;
-
-                            if(cursor[ruleIndex] == grammarRules[ruleIndex].length - 1)
-                                continue;
-                        }
-                        // non-terminal symbol we have one pending terminal symbol to swallow from stack,
-                        // need to find the rule that maps into a current rules non-terminal symbol class and starts with
-                        // pending terminal symbol from input if we cant match it's a grammar error.
-                        else if (grammarRules[ruleIndex][tokens.indexOf(curr)] instanceof Class<?>) {
-
-
-                            for(int i = 0; i < grammarRules.length; i++) {
-                                if(grammarRules[i][grammarRules[i].length - 1].getClass() == grammarRules[ruleIndex][stack.indexOf(curr)])
-
-                            }
-                            continue;
-                        }
-                    }
-                }
-            }*/
         return null;
 
     }
