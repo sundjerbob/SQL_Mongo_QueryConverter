@@ -10,4 +10,5 @@ public class MyQuery extends ASTNode {
     public MyQuery() {
 
     }
+
 }

@@ -1,4 +1,4 @@
-package raf.project;
+package raf.project.app;
 
 import raf.project.back_end.lexer.Lexer;
 import raf.project.back_end.lexer.LexerAPI;
@@ -9,23 +9,9 @@ import raf.project.back_end.parser.symbol.Symbol;
 import java.util.List;
 import java.util.Scanner;
 
-public class Main {
+public class App {
     public static void main(String[] args) {
-
-        String input = readFromConsole();
-        LexerAPI lexer = new Lexer();
-        ParserAPI parser = new Parser(lexer);
-        List<Symbol> inputTokens = lexer.tokenize(input);
-        System.out.println(inputTokens);
-        System.out.println("THAT WAS LEXER NOW LES TRY PARSING");
-
-        try{
-            System.out.println(parser.parse(inputTokens));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-
+        Test.runTest();
     }
 
     private static String readFromConsole() {
@@ -41,5 +27,4 @@ public class Main {
         scanner.close();
         return query.toString();
     }
-
 }
