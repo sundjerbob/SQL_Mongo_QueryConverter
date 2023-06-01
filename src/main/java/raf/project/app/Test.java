@@ -4,6 +4,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import raf.project.back_end.mongo_db_connection.ConnectionAPI;
 import raf.project.back_end.mongo_db_connection.DBController;
 
 import java.util.Arrays;
@@ -11,7 +12,7 @@ import java.util.Arrays;
 public class Test {
     public static void runTest() {
 
-        MongoClient connection = DBController.getConnection();
+        MongoClient connection = ConnectionAPI.getInstance().getConnection();
         MongoDatabase database = connection.getDatabase("bp_tim86");
         MongoCursor<Document> cursor = database.getCollection("employees").aggregate(
                 Arrays.asList(

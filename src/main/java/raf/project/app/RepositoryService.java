@@ -5,8 +5,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import raf.project.back_end.mapper.object.nodes.MyQuery;
-import raf.project.back_end.mapper.object.nodes.Statement;
+import raf.project.back_end.mapper.ast_object.nodes.MyQuery;
+import raf.project.back_end.mapper.ast_object.nodes.Statement;
 import raf.project.back_end.mongo_db_connection.DBController;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class RepositoryService {
         assert statement != null;
         String collectionName = (String) statement.getFromArgs().get(0);
 
-        MongoClient connection = DBController.getConnection();
+        MongoClient connection = new DBController().getConnection();
         MongoDatabase database = connection.getDatabase("bp_tim86");
         MongoCollection<Document> collection = database.getCollection(collectionName);
         MongoCursor<Document> cursor = null;

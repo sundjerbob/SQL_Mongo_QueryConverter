@@ -2,7 +2,7 @@ package raf.project.back_end.lexer;
 
 import org.jetbrains.annotations.NotNull;
 import raf.project.back_end.parser.symbol.Symbol;
-import raf.project.error.GenericError;
+import raf.project.error.SyntaxError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ public class Lexer implements LexerAPI {
 
                     //if we read a word, and it does not match any of the syntax table tokens than we throw an error
                     else
-                        GenericError.getInstance().addError("Unrecognized token: " + lexemeBuilder.toString());
+                        throw new SyntaxError("Unrecognized token: " + lexemeBuilder.toString());
                 }
 
                 //we don't build words out of whitespaces if we got in this if branch we skip the char adding to lexemeBuilder part that's underneath
@@ -56,7 +56,7 @@ public class Lexer implements LexerAPI {
             if( ( token = matchToken(lexemeBuilder.toString()) ) != null)
                 tokenizedInput.add(new Symbol(token, lexemeBuilder.toString()) );
             else
-                GenericError.getInstance().addError("Unrecognized word: " + lexemeBuilder);
+                throw new SyntaxError("ne valja");
         }
 
         return  tokenizedInput;
