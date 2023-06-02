@@ -1,33 +1,32 @@
 package raf.project.back_end.lexer;
 
-import raf.project.back_end.parser.symbol.InputSymbolsStack;
-import raf.project.back_end.parser.symbol.Symbol;
-
-import java.util.List;
+import raf.project.back_end.parser.symbol.SymbolStack;
 
 /**
+ * @author Tadija
  * @apiNote Lexical analyzer unit interface defines functions are used by a
  * parsing unit defined in <code>ParserAPI</code> for breaking down a raw
  * input stream into words-lexemes then a list of parsable symbols
  * @see raf.project.back_end.parser.ParserAPI
- * @author Tadija
  */
 public interface LexerAPI {
 
 
-    InputSymbolsStack tokenize(String input);
+    SymbolStack tokenize(String input);
 
 
     /**
+     * Defines the syntax (language rules), wrapped into a list of acceptable lexemes-words.
      *
+     * @author Tadija
      * @apiNote <code>enum TokenTable</code> enumeration array of terminal symbols - tokens,
      * each with its regex respectfully.
-     * It stores list of terminal symbols each with its regex pattern that defines a set acceptable lexemes.
+     * It stores a list of terminal symbols each with its regex pattern that defines a set acceptable lexemes.
      * Every lexeme from input needs to be matched in order for the input to be tokenized
      * into a list of parsable terminal symbols.
      * When the token is matched it is wrapped in a <code>class Symbol</code> class instance
      * and passed forward to a parsing unit.
-     * @author Tadija
+     * <p>
      */
     enum TokenTable {
         SELECT("\\b(?i)SELECT\\b"),
@@ -63,12 +62,13 @@ public interface LexerAPI {
         }
 
         /**
+         * Method used to try to match a word-lexeme with a <code>TokenTable</code> enumeration instance based on
+         * if that instances regex pattern accepts the lexeme or not.
+         *
          * @param lexeme the word that we want to try to match with any existing symbol regex requirements.
          * @return an instance of <code>enum TokenTable</code> witch signifies the type
          * of token that was matched with the lexeme from input stream.
          * Returns is <code>null</code> , if the lexeme couldn't be matched to any pattern from the table.
-         * @apiNote Method used to try to match a word-lexeme with a <code>TokenTable</code> enumeration instance based on
-         * if that instances regex pattern accepts the lexeme or not.
          * @author Tadija
          */
         public static TokenTable matchToken(String lexeme) {

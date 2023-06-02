@@ -7,6 +7,7 @@ import org.bson.Document;
 import raf.project.back_end.mongo_db_connection.ConnectionAPI;
 import raf.project.back_end.mongo_db_connection.DBController;
 
+import javax.print.Doc;
 import java.util.Arrays;
 
 public class Test {
@@ -14,6 +15,7 @@ public class Test {
 
         MongoClient connection = ConnectionAPI.getInstance().getConnection();
         MongoDatabase database = connection.getDatabase("bp_tim86");
+
         MongoCursor<Document> cursor = database.getCollection("employees").aggregate(
                 Arrays.asList(
                         Document.parse("{\n" +
@@ -39,21 +41,32 @@ public class Test {
         while (cursor.hasNext()) {
             Document d = cursor.next();
             System.out.println(d.toJson());
-            Document a = (Document) d.get("employeesInTheSameDepartment");
-            System.out.println(a.getString("first_name"));
+            for(String k : d.keySet()) {
+
+                if(d.get(k)  instanceof Document) {
+                    Document doc = (Document) d.get(k);
+                    if(doc.containsKey("first_name"))
+                        System.out.println(doc.getString("first_name"));
+                }
+                else if(d.get(k) instanceof String)
+                    System.out.println(d.getString(k));
+            }
 
         }
+
 
         String projection = "{department_name:1, location_id:1}";
         String sort = "{department_id:-1}";
+
         MongoCursor<Document> cursor1 = database.getCollection("departments").find(Document.parse("{department_id:{$lt:90}}")).projection(Document.parse(projection))
                 .sort(Document.parse(sort)).iterator();
-
         while (cursor1.hasNext()) {
-            Document d = cursor1.next();
-            System.out.println(d.toJson());
-            System.out.println(d.getString("department_name"));
+            Document doc = cursor1.next();
+
+            System.out.println(doc.toJson());
+            System.out.println(doc.getInteger("location_id"));
         }
+
 
         cursor.close();
         cursor1.close();

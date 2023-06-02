@@ -1,0 +1,13 @@
+SELECT
+WHERE ($eq, $gt, $gte, $lt, $lte, $ne, [$and, $or] na 2 ili 3 ograniceno, $regex, $cmp, $in)
+ORDER BY
+u matchu
+COUNT() - count:
+GROUP BY ($group)
+SUM() - $sum
+MIN() - $min
+MAX() - $max
+AVG() - $avg
+JOIN (max 2 JOINA) omoguciti ALIAS kolona alias i mora biti sa uslovom USING ili ON
+PODUPIT (max 1) u WHERE, bez izvedenih tabela, >, <,=, in
+

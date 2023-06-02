@@ -38,9 +38,12 @@ public class RepositoryService {
             throw new RuntimeException("Prso cursor");
 
         while (cursor.hasNext()){
-            System.out.println(cursor.next().toJson());
-        }
+            Document doc = cursor.next();
 
+        }
+        cursor.close();
+        connection.close();
         return null;
     }
+
 }
