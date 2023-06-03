@@ -37,10 +37,11 @@ public class Lexer implements LexerAPI {
 
                     //if we read a word, and it does not match any of the syntax table tokens than we throw an error
                     else
-                        throw new SyntaxError("Unrecognized token: " + lexemeBuilder.toString());
+                        return null;
                 }
 
-                //we don't build words out of whitespaces if we got in this if branch we skip the char adding to lexemeBuilder part that's underneath
+                //we don't build words out of white-space if we got in this branch,
+                // we skip the char adding to lexemeBuilder part that's underneath
                 continue;
             }
 
@@ -54,7 +55,7 @@ public class Lexer implements LexerAPI {
             if( ( token = matchToken(lexemeBuilder.toString()) ) != null)
                 tokenizedInput.pushToBottom(new Symbol(token, lexemeBuilder.toString()) );
             else
-                throw new SyntaxError("ne valja");
+                return null;
         }
 
         return  tokenizedInput;

@@ -1,4 +1,4 @@
-package raf.project.back_end.mongo_db_connection;
+package raf.project.back_end.db_connector;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;

@@ -29,19 +29,23 @@ public interface LexerAPI {
      * <p>
      */
     enum TokenTable {
+
         SELECT("\\b(?i)SELECT\\b"),
         DISTINCT("\\b(?i)DISTINCT\\b"),
         FROM("\\b(?i)FROM\\b"),
         WHERE("\\b(?i)WHERE\\b"),
+        LIKE("\\b(?i)LIKE\\b"),
+        IN("\\b(?i)IN\\b"),
+
         JOIN("\\b(?i)JOIN\\b"),
         ON("\\b(?i)ON\\b"),
+        USING("\\b(?i)USING\\b"),
         GROUP("\\b(?i)GROUP\\b"),
         BY("\\b(?i)BY\\b"),
         ORDER("\\b(?i)ORDER\\b"),
         AND("\\b(?i)AND\\b"),
         OR("\\b(?i)OR\\b"),
         //ids go after keywords because id regex can catch any keyword, so keywords have priority and go first
-        ID("(?=.*[a-zA-Z])[a-zA-Z0-9_]*[a-zA-Z][a-zA-Z0-9_]*"),
         SEMI_COLUMN(";"),
         LESS_THAN("<"),
         LESS_THAN_OR_EQUAL("<="),
@@ -51,7 +55,9 @@ public interface LexerAPI {
         NOT_EQUAL("!="),
         COMMA(","),
         INT_CONST("\\d+"),
-        STR_CONST("\"[^\"]+\"");
+        STR_CONST("'[^\"]+'"),
+        ID("(?=.*[a-zA-Z])[a-zA-Z0-9_]*[a-zA-Z][a-zA-Z0-9_]*");
+
 
         private final String lexemeRegex;
 
@@ -73,7 +79,7 @@ public interface LexerAPI {
 
             for (TokenTable curr : TokenTable.values()) {
                 if (lexeme.matches(curr.lexemeRegex)) {
-                    System.out.println("matched");
+                   // System.out.println("matched");
                     return curr;
 
                 }

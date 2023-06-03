@@ -1,6 +1,6 @@
-package raf.project.back_end.mapper.ast_object.nodes;
+package raf.project.back_end.parser.ast.nodes;
 
-import raf.project.back_end.mapper.ast.ASTNode;
+import raf.project.back_end.parser.ast.ASTNode;
 import raf.project.back_end.parser.symbol.Symbol;
 
 public class Constant extends ASTNode {

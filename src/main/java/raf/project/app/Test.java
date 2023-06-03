@@ -4,10 +4,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import raf.project.back_end.mongo_db_connection.ConnectionAPI;
-import raf.project.back_end.mongo_db_connection.DBController;
+import raf.project.back_end.db_connector.ConnectionAPI;
 
-import javax.print.Doc;
 import java.util.Arrays;
 
 public class Test {

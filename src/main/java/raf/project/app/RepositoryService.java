@@ -1,15 +1,5 @@
 package raf.project.app;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
-import org.bson.Document;
-import raf.project.back_end.mapper.ast_object.nodes.MyQuery;
-import raf.project.back_end.mongo_db_connection.DBController;
-
-import java.util.List;
-
 public class RepositoryService {
 
     /*public static List<?> executeMQLQuery(MyQuery mq) {

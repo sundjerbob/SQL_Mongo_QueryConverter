@@ -1,4 +1,4 @@
-package raf.project.back_end.mapper.ast;
+package raf.project.back_end.parser.ast;
 
 import raf.project.back_end.lexer.LexerAPI.TokenTable;
 

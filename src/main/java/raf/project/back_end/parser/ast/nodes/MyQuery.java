@@ -1,9 +1,7 @@
-package raf.project.back_end.mapper.ast_object.nodes;
+package raf.project.back_end.parser.ast.nodes;
 
 
-import raf.project.back_end.mapper.ast.ASTNode;
-
-import java.util.ArrayList;
+import raf.project.back_end.parser.ast.ASTNode;
 
 public class MyQuery extends ASTNode {
 

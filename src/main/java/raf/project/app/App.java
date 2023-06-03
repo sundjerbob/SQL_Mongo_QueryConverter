@@ -2,12 +2,10 @@ package raf.project.app;
 
 import raf.project.back_end.lexer.Lexer;
 import raf.project.back_end.lexer.LexerAPI;
-import raf.project.back_end.mapper.ast.ASTNode;
+import raf.project.back_end.parser.ast.ASTNode;
 import raf.project.back_end.parser.Parser;
 import raf.project.back_end.parser.ParserAPI;
 import raf.project.back_end.parser.symbol.SymbolStack;
-import raf.project.error.SyntaxError;
-import raf.project.front_end.MainFrame;
 
 import java.util.Scanner;
 
@@ -17,20 +15,9 @@ public class App {
         // Test.runTest();
         LexerAPI lexer = new Lexer();
 
-        //read query from console (testing)
         String input = readFromConsole();
-        //test tokenization
         SymbolStack stack = lexer.tokenize(input);
         System.out.println(stack);
-
-        System.out.println("--------------------");
-        //test swallowing
-        System.out.println(stack.popAllToStr());
-
-        System.out.println("--------------------");
-
-        stack = lexer.tokenize(input);
-        //test parser
 
         ParserAPI parser = new Parser();
 
