@@ -2,8 +2,10 @@ package raf.project.app;
 
 import raf.project.back_end.lexer.Lexer;
 import raf.project.back_end.lexer.LexerAPI;
+import raf.project.back_end.mapper.ast.ASTNode;
 import raf.project.back_end.parser.Parser;
 import raf.project.back_end.parser.ParserAPI;
+import raf.project.back_end.parser.symbol.SymbolStack;
 import raf.project.error.SyntaxError;
 import raf.project.front_end.MainFrame;
 
@@ -14,15 +16,34 @@ public class App {
     public static void main(String[] args) {
         // Test.runTest();
         LexerAPI lexer = new Lexer();
+
+        //read query from console (testing)
         String input = readFromConsole();
+        //test tokenization
+        SymbolStack stack = lexer.tokenize(input);
+        System.out.println(stack);
 
-           System.out.println(lexer.tokenize(input));
-           System.out.println("--------------------");
-           System.out.println(lexer.tokenize(input).popAllToStr());
+        System.out.println("--------------------");
+        //test swallowing
+        System.out.println(stack.popAllToStr());
 
+        System.out.println("--------------------");
 
+        stack = lexer.tokenize(input);
+        //test parser
+
+        ParserAPI parser = new Parser();
+
+        try {
+            ASTNode myQuery = parser.parse(stack);
+            if(myQuery == null)
+                System.out.println("MY KVERI TI JE NULA");
+            System.out.println(myQuery);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         System.out.println("clean");
-        Test.runTest();
+        //Test.runTest();
 
     }
 

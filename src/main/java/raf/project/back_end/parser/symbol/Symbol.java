@@ -5,7 +5,7 @@ import raf.project.back_end.lexer.LexerAPI.*;
 
 public class Symbol {
 
-    private TokenTable tokenType;
+    public TokenTable tokenType;
     public Symbol next;
 
     private String value;

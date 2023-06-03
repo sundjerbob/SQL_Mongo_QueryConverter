@@ -37,13 +37,11 @@ public interface LexerAPI {
         ON("\\b(?i)ON\\b"),
         GROUP("\\b(?i)GROUP\\b"),
         BY("\\b(?i)BY\\b"),
-        HAVING("\\b(?i)HAVING\\b"),
         ORDER("\\b(?i)ORDER\\b"),
         AND("\\b(?i)AND\\b"),
         OR("\\b(?i)OR\\b"),
-        //ids go after keywords because any keyword can be caught by id regex so keywords have priority and go first
-        TABLE_ID("(?=.*[a-zA-Z])[a-zA-Z0-9_]*[a-zA-Z][a-zA-Z0-9_]*"),
-        COLUMN_ID(TABLE_ID.lexemeRegex + "\\." + TABLE_ID.lexemeRegex),
+        //ids go after keywords because id regex can catch any keyword, so keywords have priority and go first
+        ID("(?=.*[a-zA-Z])[a-zA-Z0-9_]*[a-zA-Z][a-zA-Z0-9_]*"),
         SEMI_COLUMN(";"),
         LESS_THAN("<"),
         LESS_THAN_OR_EQUAL("<="),

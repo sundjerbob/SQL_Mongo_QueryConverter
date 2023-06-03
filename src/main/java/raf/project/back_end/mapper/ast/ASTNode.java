@@ -7,12 +7,12 @@ import java.util.List;
 
 public class ASTNode {
     private TokenTable tokenType;
-    private String value;
-    protected List<ASTNode> children;
+    private String lexemeValue;
+    protected List<Object> children;
 
-    public ASTNode(TokenTable tokenType, String value) {
+    public ASTNode(TokenTable tokenType, String lexemeValue) {
         this.tokenType = tokenType;
-        this.value = value;
+        this.lexemeValue = lexemeValue;
         this.children = new ArrayList<>();
     }
 
@@ -27,25 +27,18 @@ public class ASTNode {
         this.tokenType = tokenType;
     }
 
-    public String getValue() {
-        return value;
+    public String getLexemeValue() {
+        return lexemeValue;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public List<ASTNode> getChildren() {
+    public List<?> getChildren() {
         return children;
     }
 
-    public ASTNode addChild(ASTNode child) {
+    public ASTNode addChild(Object child) {
         children.add(child);
         return this;
     }
 
-    @Override
-    public String toString() {
-        return "majmunina";
-    }
+
 }

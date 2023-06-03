@@ -6,7 +6,5 @@ import raf.project.back_end.parser.symbol.SymbolStack;
 public interface ParserAPI {
     public ASTNode parse(SymbolStack stack) throws Exception;
 
-    public static ParserAPI getInstance(){
-        return Parser.getInstance();
-    };
+
 }

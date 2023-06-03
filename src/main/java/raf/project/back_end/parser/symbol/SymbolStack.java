@@ -13,7 +13,7 @@ public class SymbolStack {
     private volatile Symbol head;
     private volatile Symbol tail;
 
-    public SymbolStack(){
+    public SymbolStack() {
         head = null;
         tail = null;
     }
@@ -49,7 +49,8 @@ public class SymbolStack {
      * This method gives you a look at Symbol you would get by performing <code>public Symbol swallow()</code> method call,
      * except it doesn't change the top/tail
      *
-     * @return copy of the current symbol on the top of the stack, if the stack is empty the return is null;
+     * @return copy of the current symbol on the top of the stack, if the stack is empty, the return is "empty symbol";
+     * that enables checking the next symbols type, which is what is method used for.
      * @apiNote By calling this method, caller can preview current stack top symbol,
      * but it's a reference to a copy of actual symbol, therefore, it is ensured that
      * the stack structure won't be changed a form outside.
@@ -57,6 +58,8 @@ public class SymbolStack {
      * because we would risk somebody setting it to null.
      */
     public Symbol nextUp() {
+        if(tail == null)
+            return  new Symbol(null,"null");
         return new Symbol(tail.getTokenType(), tail.getValue());
     }
 
@@ -72,17 +75,18 @@ public class SymbolStack {
 
         // || head.next == null
         if (head == tail) {
-            System.out.println( "head==tail" + head);
+            // System.out.println( "head==tail" + head);
             Symbol swallowed = head; //this buffer for the return, because we will lose a reference
             head = null;// pop the head
             tail = null;// pop the tail
 
             return swallowed;// return what is to be swallowed by caller
         }
-        System.out.println( "else: " + head.getValue());
-        //if list has more than one element it is iterated from the start and stopping at the one before the current top/tail
+        //System.out.println( "else: " + head.getValue());
+        //if list has more than one,
+        // element it is iterated from the start and stopping at the one before the current top/tail
         Symbol newTail = head;//starting from head
-        while (newTail.next != tail) {// if we are one before the last we stop there
+        while (newTail.next != tail) {// if we are one before the last, we stop there
             newTail = newTail.next;// go next we need to find the new tail
         }
 
@@ -110,8 +114,7 @@ public class SymbolStack {
     public String popAllToStr() {
         StringBuilder str = new StringBuilder();
         Symbol curr = swallow();
-        if(curr == null)
-            System.out.println("ovdi je griska");
+
         while (curr != null) {
             str.append("Symbol { type: ").append(curr.getTokenType()).append(", value: ").append(curr.getValue()).append(" }\n");
             curr = swallow();

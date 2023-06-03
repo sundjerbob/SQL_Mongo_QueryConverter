@@ -6,17 +6,14 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import raf.project.back_end.mapper.ast_object.nodes.MyQuery;
-import raf.project.back_end.mapper.ast_object.nodes.Statement;
 import raf.project.back_end.mongo_db_connection.DBController;
 
 import java.util.List;
 
 public class RepositoryService {
 
-    public static List<?> executeMQLQuery(MyQuery mq) {
+    /*public static List<?> executeMQLQuery(MyQuery mq) {
 
-        Statement statement = null;
-        mq = (MyQuery) new MyQuery().addChild(new Statement().addSelectArgs(List.of("*")).addFromArgs(List.of("employees")));
 
 
         if (mq.getChildren().size() == 1){
@@ -45,5 +42,5 @@ public class RepositoryService {
         connection.close();
         return null;
     }
-
+*/
 }

@@ -6,6 +6,7 @@ public class Condition extends ASTNode {
 
 
     public Condition() {
+        super();
     }
 
     public Condition(Expression expression) {
@@ -13,11 +14,6 @@ public class Condition extends ASTNode {
 
     }
 
-    public Condition(Condition leftCondition, LogicOperation logicLink, Condition rightCondition) {
-        addChild(leftCondition);
-        addChild(logicLink);
-        addChild(rightCondition);
-    }
 
 
 }
