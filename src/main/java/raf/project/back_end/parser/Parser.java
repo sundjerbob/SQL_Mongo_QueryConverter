@@ -158,26 +158,33 @@ public class Parser implements ParserAPI {
                 throw new SyntaxError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected an id after keyword WHERE.");
 
             TokenTable operator = stack.nextUp().tokenType;
-            if (operator == LESS_THAN || operator == LESS_THAN_OR_EQUAL
+            if ((operator == LESS_THAN) || (operator == LESS_THAN_OR_EQUAL)
                     || operator == GREATER || operator == GREATER_OR_EQUAL || operator == EQUAL || operator == NOT_EQUAL) {
 
+                stack.swallow();
 
                 if (stack.nextUp().tokenType == SELECT) {
-                    //podupit u where vracamo ne zavrseni where clause ***
+
+                    //todo: DUPLI UPIT ALJOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
                     where.addChild(selectClause.parse(stack)).addChild(operator);
                     return where;
                 }
                 else if(stack.nextUp().tokenType == INT_CONST) {
                    where.addChild(Integer.parseInt(stack.swallow().getValue()));
+
                 }
                 else if (stack.nextUp().tokenType == STR_CONST) {
                     where.addChild(stack.swallow().getValue());
                 }
                 else
                     throw new SyntaxError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected int or string type constant or a sub-query");
+
+                return where;
             }
 
             else if(operator == LIKE) {
+                stack.swallow();
+
                 if(stack.nextUp().tokenType == STR_CONST)
                 {
                     where.addChild(operator);
@@ -186,12 +193,17 @@ public class Parser implements ParserAPI {
                 else
                     throw new SyntaxError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected string type constant as an argument of LIKE operation.");
 
-            } else if (operator == IN) {
-
             }
+            else if (operator == IN) {
+                stack.swallow();
+                where.addChild(inArgumentList.parse(stack));
+            }
+            else
+                throw new SyntaxError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected WHERE clause operator: (<, >, >=, <=, =, !=, IN, LIKE");
 
+            return where;
         }
-        return null;
+        throw new SyntaxError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected keyword WHERE.");
 
     },
 
@@ -241,7 +253,7 @@ public class Parser implements ParserAPI {
     @Override
     public ASTNode parse(@NotNull SymbolStack stack) {
         try {
-           return inArgumentList.parse(stack);
+           return whereClause.parse(stack);
         } catch (SyntaxError error) {
             error.printStackTrace();
         }
