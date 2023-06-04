@@ -25,11 +25,10 @@ public class App {
             ASTNode myQuery = parser.parse(stack);
             if(myQuery == null)
                 System.out.println("MY KVERI TI JE NULA");
+            System.out.println(myQuery);
 
-            for(Object k : myQuery.getChildren())
-            {
-                System.out.println(k);
-            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

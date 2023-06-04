@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import raf.project.back_end.lexer.LexerAPI;
 import raf.project.back_end.parser.ast.ASTNode;
 import raf.project.back_end.parser.ast.nodes.*;
-import raf.project.back_end.parser.symbol.Symbol;
 import raf.project.back_end.parser.symbol.SymbolStack;
 import raf.project.error.SyntaxError;
 
@@ -164,8 +163,7 @@ public class Parser implements ParserAPI {
                 stack.swallow();
 
                 if (stack.nextUp().tokenType == SELECT) {
-
-                    //todo: DUPLI UPIT ALJOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo
+                        //ostavljam select na steku jer cu  u myQveriju da pitam da li je podstatement
                     where.addChild(selectClause.parse(stack)).addChild(operator);
                     return where;
                 }
@@ -211,14 +209,50 @@ public class Parser implements ParserAPI {
     //todo: t1
     myQuery = stack -> {
 
+        //OBAVEZNI DEO SELECT FROM
         MyQuery myQuery = (MyQuery) new MyQuery().addChild(selectClause.parse(stack)).addChild(fromClause.parse(stack));
 
+        //OPCIONI DEO JOIN
         if (stack.nextUp().tokenType == JOIN) {
             myQuery.addChild(joinClause.parse(stack));
         }
-        if(stack.nextUp().tokenType == WHERE){
-            ASTNode where = whereClause.parse(stack);
-            //if(stack.nextUp() == )
+        //OPCIONI DEO WHERE PRVI
+        if(stack.nextUp().tokenType == WHERE) {
+            ASTNode firstWhere = whereClause.parse(stack);
+
+            if(stack.nextUp().tokenType == SELECT) {
+                firstWhere.addChild(selectClause).addChild(fromClause);
+
+                if(stack.nextUp().tokenType == WHERE)
+                    firstWhere.addChild(whereClause.parse(stack));
+
+                if(stack.nextUp().tokenType == AND || stack.nextUp().tokenType == OR)
+                    firstWhere.addChild(whereClause.parse(stack));
+            }
+
+            //dodajes
+            myQuery.addChild(firstWhere);
+            if(stack.nextUp().tokenType == WHERE)
+                throw new SyntaxError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected a logic operator ( AND , OR ) if you want to chain where clauses.");
+
+            //OPCIONI DEO WHERE DRUGI
+            if(stack.nextUp().tokenType == AND || stack.nextUp().tokenType == OR) {
+                myQuery.addChild(stack.swallow().tokenType);
+                ASTNode secondWhere = whereClause.parse(stack);
+
+                if(stack.nextUp().tokenType == SELECT) {
+
+                    secondWhere.addChild(selectClause).addChild(fromClause);
+
+                    if(stack.nextUp().tokenType == WHERE)
+                        secondWhere.addChild(whereClause.parse(stack));
+
+                    if(stack.nextUp().tokenType == AND || stack.nextUp().tokenType == OR)
+                        secondWhere.addChild(whereClause.parse(stack));
+
+                }
+                myQuery.addChild(secondWhere);
+            }
         }
 
     //tacka zarez fali
@@ -253,7 +287,8 @@ public class Parser implements ParserAPI {
     @Override
     public ASTNode parse(@NotNull SymbolStack stack) {
         try {
-           return whereClause.parse(stack);
+           return myQuery.parse(stack);
+
         } catch (SyntaxError error) {
             error.printStackTrace();
         }
