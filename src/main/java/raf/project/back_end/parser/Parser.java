@@ -22,6 +22,7 @@ public class Parser implements ParserAPI {
 
 
         if (stack.nextUp().tokenType == SELECT) {
+
             System.out.println("uvatio select");
             SelectClause select = new SelectClause(stack.swallow().getTokenType());
 
@@ -37,6 +38,7 @@ public class Parser implements ParserAPI {
 
                         if (stack.nextUp().tokenType != ID)
                             throw new SyntaxError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected another column name after \",\" as SELECT clause argument.");
+
 
                         continue;
                     }
@@ -69,6 +71,7 @@ public class Parser implements ParserAPI {
                 from.addChild(stack.swallow().getValue());
             }
             return from;
+
         } else
             throw new SyntaxError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected keyword FROM.");
 
@@ -127,7 +130,7 @@ public class Parser implements ParserAPI {
             }
 
 
-            if(stack.nextUp().tokenType == RIGHT_PAR){
+            if(stack.nextUp().tokenType == RIGHT_PAR) {
                 stack.swallow();
                 return argList;
             }
@@ -148,7 +151,7 @@ public class Parser implements ParserAPI {
     // operatore parsiramo tako sto dodajemo njihov TableToken tokenType odnosno tip terminalnog simbola operatora (<,<=,>,>=,=,!=)
     whereClause = stack -> {
 
-        if (stack.nextUp().tokenType == WHERE) {
+        if (stack.nextUp().tokenType == WHERE) {//zgutaj where prvo
             WhereClause where = new WhereClause(stack.swallow().tokenType);
 
             if (stack.nextUp().tokenType == ID)
@@ -160,41 +163,40 @@ public class Parser implements ParserAPI {
             if ((operator == LESS_THAN) || (operator == LESS_THAN_OR_EQUAL)
                     || operator == GREATER || operator == GREATER_OR_EQUAL || operator == EQUAL || operator == NOT_EQUAL) {
 
-                stack.swallow();
+                stack.swallow();// swallow <, >, <=, >= , ==, !=
 
                 if (stack.nextUp().tokenType == SELECT) {
-                        //ostavljam select na steku jer cu  u myQveriju da pitam da li je podstatement
-                    where.addChild(selectClause.parse(stack)).addChild(operator);
-                    return where;
+                    System.out.println("vratio ga na dupli upit");
+                    where.addChild(operator);// dodaj operator
+                    return where; //wrati se na parsiranje selekta
                 }
-                else if(stack.nextUp().tokenType == INT_CONST) {
-                   where.addChild(Integer.parseInt(stack.swallow().getValue()));
 
-                }
-                else if (stack.nextUp().tokenType == STR_CONST) {
+                else if(stack.nextUp().tokenType == INT_CONST)
+                    where.addChild(Integer.parseInt(stack.swallow().getValue()));
+
+                else if (stack.nextUp().tokenType == STR_CONST)
                     where.addChild(stack.swallow().getValue());
-                }
+
                 else
-                    throw new SyntaxError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected int or string type constant or a sub-query");
+                    throw new SyntaxError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected int or string type constant or a sub-query.");
 
                 return where;
             }
 
             else if(operator == LIKE) {
-                stack.swallow();
+
+                where.addChild(stack.swallow());// swalow LIKE
 
                 if(stack.nextUp().tokenType == STR_CONST)
-                {
-                    where.addChild(operator);
-                    where.addChild(stack.swallow().getValue());
-                }
+                    where.addChild(stack.swallow().getValue());// swalow string costant as LIKE argument
+
                 else
                     throw new SyntaxError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected string type constant as an argument of LIKE operation.");
 
             }
             else if (operator == IN) {
-                stack.swallow();
-                where.addChild(inArgumentList.parse(stack));
+                where.addChild(stack.swallow());// swallow IN operator
+                where.addChild(inArgumentList.parse(stack)); // continue with parsing inArgumentList array.... ad those
             }
             else
                 throw new SyntaxError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected WHERE clause operator: (<, >, >=, <=, =, !=, IN, LIKE");
@@ -221,17 +223,25 @@ public class Parser implements ParserAPI {
             ASTNode firstWhere = whereClause.parse(stack);
 
             if(stack.nextUp().tokenType == SELECT) {
-                firstWhere.addChild(selectClause).addChild(fromClause);
+                System.out.println("u my kveriju poceo da parsira sledeci wheree");
+                firstWhere.addChild(selectClause.parse(stack)).addChild(fromClause.parse(stack));//progutano sve do whera
 
                 if(stack.nextUp().tokenType == WHERE)
-                    firstWhere.addChild(whereClause.parse(stack));
+                    firstWhere.addChild(whereClause.parse(stack));//shere ce da zguta sve do eventualnog logickog vezznika
 
-                if(stack.nextUp().tokenType == AND || stack.nextUp().tokenType == OR)
+                if(stack.nextUp().tokenType == AND || stack.nextUp().tokenType == OR) {//veznik za 2
+                    stack.swallow(); //zgutaj and ili or veznik
                     firstWhere.addChild(whereClause.parse(stack));
+                }
             }
 
-            //dodajes
+            if(stack.nextUp().tokenType == AND || stack.nextUp().tokenType == OR) {
+                stack.swallow(); //zgutaj and ili or veznik
+                firstWhere.addChild(whereClause.parse(stack));
+            }
             myQuery.addChild(firstWhere);
+
+
             if(stack.nextUp().tokenType == WHERE)
                 throw new SyntaxError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected a logic operator ( AND , OR ) if you want to chain where clauses.");
 
@@ -242,13 +252,15 @@ public class Parser implements ParserAPI {
 
                 if(stack.nextUp().tokenType == SELECT) {
 
-                    secondWhere.addChild(selectClause).addChild(fromClause);
+                    secondWhere.addChild(selectClause).addChild(fromClause);//zgutalo je sve do wherea opcionog
 
-                    if(stack.nextUp().tokenType == WHERE)
+                    if(stack.nextUp().tokenType == WHERE)//
                         secondWhere.addChild(whereClause.parse(stack));
 
-                    if(stack.nextUp().tokenType == AND || stack.nextUp().tokenType == OR)
+                    if(stack.nextUp().tokenType == AND || stack.nextUp().tokenType == OR) {//second sub-query 2 chained where statements
+                        stack.swallow(); //zgutaj and ili or
                         secondWhere.addChild(whereClause.parse(stack));
+                    }
 
                 }
                 myQuery.addChild(secondWhere);
@@ -292,7 +304,7 @@ public class Parser implements ParserAPI {
         } catch (SyntaxError error) {
             error.printStackTrace();
         }
-        return null;
+      return null;
     }
 
     //reduction lambda function returns newly parsed abstract syntax tree node
