@@ -80,6 +80,8 @@ public class SymbolStack {
             head = null;// pop the head
             tail = null;// pop the tail
 
+            if(swallowed == null)
+                return new Symbol(null, "*null");
             return swallowed;// return what is to be swallowed by caller
         }
         //System.out.println( "else: " + head.getValue());

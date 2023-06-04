@@ -3,7 +3,7 @@ package raf.project.back_end.parser.ast.nodes;
 import raf.project.back_end.lexer.LexerAPI.TokenTable;
 import raf.project.back_end.parser.ast.ASTNode;
 
-public class Clause extends ASTNode {
+public abstract class Clause extends ASTNode {
 
     TokenTable keyword;
 

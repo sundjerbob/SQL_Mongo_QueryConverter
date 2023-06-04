@@ -36,7 +36,6 @@ public interface LexerAPI {
         WHERE("\\b(?i)WHERE\\b"),
         LIKE("\\b(?i)LIKE\\b"),
         IN("\\b(?i)IN\\b"),
-
         JOIN("\\b(?i)JOIN\\b"),
         ON("\\b(?i)ON\\b"),
         USING("\\b(?i)USING\\b"),
@@ -45,7 +44,8 @@ public interface LexerAPI {
         ORDER("\\b(?i)ORDER\\b"),
         AND("\\b(?i)AND\\b"),
         OR("\\b(?i)OR\\b"),
-        //ids go after keywords because id regex can catch any keyword, so keywords have priority and go first
+        LEFT_PAR("\\("),
+        RIGHT_PAR("\\)"),
         SEMI_COLUMN(";"),
         LESS_THAN("<"),
         LESS_THAN_OR_EQUAL("<="),
@@ -55,7 +55,8 @@ public interface LexerAPI {
         NOT_EQUAL("!="),
         COMMA(","),
         INT_CONST("\\d+"),
-        STR_CONST("'[^\"]+'"),
+        STR_CONST("'[^']+'"),
+        //ids go after keywords because id regex can catch any keyword, so keywords have priority and go first
         ID("(?=.*[a-zA-Z])[a-zA-Z0-9_]*[a-zA-Z][a-zA-Z0-9_]*");
 
 

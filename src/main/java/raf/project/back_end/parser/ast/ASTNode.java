@@ -1,6 +1,7 @@
 package raf.project.back_end.parser.ast;
 
 import raf.project.back_end.lexer.LexerAPI.TokenTable;
+import raf.project.error.SyntaxError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class ASTNode {
         return children;
     }
 
-    public ASTNode addChild(Object child) {
+    public ASTNode addChild(Object child) throws SyntaxError {
         children.add(child);
         return this;
     }
