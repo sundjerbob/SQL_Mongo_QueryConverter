@@ -1,23 +1,15 @@
 package raf.project.app;
 
-import raf.project.back_end.lexer.Lexer;
-import raf.project.back_end.lexer.LexerAPI;
-import raf.project.back_end.parser.ast.ASTNode;
-import raf.project.back_end.parser.Parser;
-import raf.project.back_end.parser.ParserAPI;
-import raf.project.back_end.parser.symbol.SymbolStack;
-
 import java.util.Scanner;
 
 public class App {
 
     public static void main(String[] args) {
         // Test.runTest();
-        LexerAPI lexer = new Lexer();
+        /*LexerAPI lexer = new Lexer();
 
         String input = readFromConsole();
         SymbolStack stack = lexer.tokenize(input);
-        System.out.println(stack);
 
         ParserAPI parser = new Parser();
 
@@ -33,7 +25,8 @@ public class App {
             e.printStackTrace();
         }
         System.out.println("clean");
-        //Test.runTest();
+        //Test.runTest();*/
+        Test.runTest();
 
     }
 

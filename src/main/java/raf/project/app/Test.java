@@ -4,37 +4,18 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import raf.project.back_end.db_connector.ConnectionAPI;
+import raf.project.app.db_connector.DBController;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 public class Test {
     public static void runTest() {
 
-        MongoClient connection = ConnectionAPI.getInstance().getConnection();
+        MongoClient connection = new DBController().getConnection();
         MongoDatabase database = connection.getDatabase("bp_tim86");
-
         MongoCursor<Document> cursor = database.getCollection("employees").aggregate(
-                Arrays.asList(
-                        Document.parse("{\n" +
-                                "  $match: {first_name: \"Steven\", last_name: \"King\"}\n" +
-                                "}"),
-                        Document.parse("{\n" +
-                                "  $lookup: {\n" +
-                                "    from: \"employees\",\n" +
-                                "    localField: \"department_id\",\n" +
-                                "    foreignField: \"department_id\",\n" +
-                                "    as: \"employeesInTheSameDepartment\"\n" +
-                                "  }\n" +
-                                "}"),
-                        Document.parse("{ $unwind: \"$employeesInTheSameDepartment\" }"),
-                        Document.parse("{ $project: {\n" +
-                                "    \"employeesInTheSameDepartment.first_name\": 1,\n" +
-                                "    \"employeesInTheSameDepartment.last_name\": 1\n" +
-                                "  }\n" +
-                                "}")
-                )
-        ).iterator();
+                Collections.singletonList(
+                        Document.parse("{ $project: {_id: 0} }"))).iterator();
 
         while (cursor.hasNext()) {
             Document d = cursor.next();
@@ -51,7 +32,7 @@ public class Test {
             }
 
         }
-
+/*
 
         String projection = "{department_name:1, location_id:1}";
         String sort = "{department_id:-1}";
@@ -64,10 +45,10 @@ public class Test {
             System.out.println(doc.toJson());
             System.out.println(doc.getInteger("location_id"));
         }
-
+*/
 
         cursor.close();
-        cursor1.close();
+        //.close();
         connection.close();
 
     }
