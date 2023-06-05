@@ -1,5 +1,7 @@
 package raf.project.app;
 
+import raf.project.desktop_view.MainFrame;
+
 import java.util.Scanner;
 
 public class App {
@@ -26,7 +28,13 @@ public class App {
         }
         System.out.println("clean");
         //Test.runTest();*/
-        Test.runTest();
+        //Test.runTest();
+        MainFrame mainFrame = new MainFrame();
+
+        // Test.runTest();
+        // RepositoryService.executeMQLQuery(null);
+
+
 
     }
 

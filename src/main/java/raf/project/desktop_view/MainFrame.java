@@ -18,7 +18,7 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JScrollPane upperScrollPane = new JScrollPane();
-        JScrollPane lowerScrollPane = new JScrollPane();
+        JScrollPane lowerScrollPane = new JScrollPane(new ResultTable().displayResultSet(null));
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, upperScrollPane, lowerScrollPane);
         splitPane.setDividerLocation(500);
@@ -39,6 +39,7 @@ public class MainFrame extends JFrame {
         panel.add(runButton);
 
         upperScrollPane.add(panel);
+
 
         /*JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));

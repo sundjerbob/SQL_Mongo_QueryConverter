@@ -2,6 +2,7 @@ package raf.project.desktop_view;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResultTable extends JTable {
@@ -11,8 +12,14 @@ public class ResultTable extends JTable {
         setModel(new DefaultTableModel());
     }
 
-    public void displayResultSet(List<List<String>> resultSet) {
+    public ResultTable displayResultSet(List<List<String>> resultSet) {
         DefaultTableModel model = (DefaultTableModel) getModel();
+
+        List<List<String>> test = new ArrayList<>();
+        test.add(List.of("kolona1", "kolona2", "kolona3"));
+        test.add(List.of("mcica", "zika", "a"));
+        test.add(List.of("aa", "bb", "dd"));
+        resultSet  = test;
 
         // Clear existing table data
         model.setRowCount(0);
@@ -32,5 +39,6 @@ public class ResultTable extends JTable {
                 model.addRow(rowData.toArray());
             }
         }
+        return this;
     }
 }
