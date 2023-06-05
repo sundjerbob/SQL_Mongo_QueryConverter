@@ -9,14 +9,19 @@ import raf.project.back_end.parser.symbol.Symbol;
 import raf.project.error.SyntaxError;
 import raf.project.front_end.MainFrame;
 
+import javax.swing.*;
 import java.util.List;
 import java.util.Scanner;
 
 public class App {
 
     public static void main(String[] args) {
+
+        MainFrame mainFrame = new MainFrame();
+
         // Test.runTest();
         // RepositoryService.executeMQLQuery(null);
+
         LexerAPI lexer = new Lexer();
         String input = readFromConsole();
        try {
@@ -28,7 +33,7 @@ public class App {
            error.printStackTrace();
        }
         System.out.println("clean");
-        MainFrame mainFrame = new MainFrame();
+
 
     }
 
