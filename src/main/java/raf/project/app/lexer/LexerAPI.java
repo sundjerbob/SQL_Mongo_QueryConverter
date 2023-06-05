@@ -55,11 +55,11 @@ public interface LexerAPI {
         EQUAL("="),
         NOT_EQUAL("!="),
         COMMA(","),
+        ASTERISK("\\*"),
         INT_CONST("\\d+"),
         STR_CONST("'[^']+'"),
         //ids go after keywords because id regex can catch any keyword, so keywords have priority and go first
         ID("(?=.*[a-zA-Z])[a-zA-Z0-9_]*[a-zA-Z][a-zA-Z0-9_]*");
-
 
         private final String lexemeRegex;
 

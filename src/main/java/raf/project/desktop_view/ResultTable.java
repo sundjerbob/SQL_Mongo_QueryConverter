@@ -15,11 +15,11 @@ public class ResultTable extends JTable {
     public ResultTable displayResultSet(List<List<String>> resultSet) {
         DefaultTableModel model = (DefaultTableModel) getModel();
 
-        List<List<String>> test = new ArrayList<>();
+        /*List<List<String>> test = new ArrayList<>();
         test.add(List.of("kolona1", "kolona2", "kolona3"));
         test.add(List.of("mcica", "zika", "a"));
         test.add(List.of("aa", "bb", "dd"));
-        resultSet  = test;
+        resultSet  = test;*/
 
         // Clear existing table data
         model.setRowCount(0);
@@ -39,6 +39,7 @@ public class ResultTable extends JTable {
                 model.addRow(rowData.toArray());
             }
         }
+        getParent().repaint();
         return this;
     }
 }

@@ -1,5 +1,6 @@
 package raf.project.app;
 
+import raf.project.app.service.QueryService;
 import raf.project.desktop_view.MainFrame;
 
 import java.util.Scanner;
@@ -30,6 +31,13 @@ public class App {
         //Test.runTest();*/
         //Test.runTest();
         MainFrame mainFrame = new MainFrame();
+        String input = readFromConsole();
+        try {
+            mainFrame.getTable().displayResultSet(QueryService.MY_INSTANCE.runQuery(input));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Test.runTest();
         // RepositoryService.executeMQLQuery(null);

@@ -43,7 +43,13 @@ public class Parser implements ParserAPI {
                 }
 
                 return select;
-            } else
+            }
+            else if(stack.nextUp().tokenType == ASTERISK) {
+                if(stack.nextUp().getValue().equals("*"))
+                    select.addChild(stack.swallow().getValue());
+                return select;
+            }
+            else
                 throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected at least one column name or \"*\" as SELECT clause argument.");
 
         } else

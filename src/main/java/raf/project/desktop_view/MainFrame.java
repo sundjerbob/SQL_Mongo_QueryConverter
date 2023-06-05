@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 
 public class MainFrame extends JFrame {
 
-    JTable table;
+    ResultTable table;
 
     public MainFrame() {
 
@@ -17,8 +17,9 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        table = new ResultTable();
         JScrollPane upperScrollPane = new JScrollPane();
-        JScrollPane lowerScrollPane = new JScrollPane(new ResultTable().displayResultSet(null));
+        JScrollPane lowerScrollPane = new JScrollPane(table);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, upperScrollPane, lowerScrollPane);
         splitPane.setDividerLocation(500);
@@ -73,5 +74,13 @@ public class MainFrame extends JFrame {
          */
         setVisible(true);
 
+    }
+
+    public ResultTable getTable() {
+        return table;
+    }
+
+    public void setTable(ResultTable table) {
+        this.table = table;
     }
 }

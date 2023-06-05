@@ -1,11 +1,13 @@
 package raf.project.app.service;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoException;
 import raf.project.app.parser.ast.clauses.MyQuery;
 import raf.project.app.parser.symbol.SymbolStack;
 import raf.project.app.query_mapper.MapperAPI;
 import raf.project.app.query_mapper.MapperAPI.MyMongoQuery;
 import raf.project.error.GrammarError;
+import raf.project.error.SemanticError;
 import raf.project.error.SyntaxError;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public enum QueryService {
 
 
 
-    List<List<String>> runQuery(String inputStream) throws SyntaxError, GrammarError {
+    public List<List<String>> runQuery(String inputStream) throws SyntaxError, GrammarError, MongoException {
 
         // making stack of tokens to parse abstract tree nodes from it
         SymbolStack tokenizedInput = LexerService.MY_INSTANCE.performLexicalAnalysis(inputStream);
@@ -33,13 +35,16 @@ public enum QueryService {
         MyQuery parsedSqlQuery = (MyQuery) ParserService.MY_INSTANCE.performAbstractSyntaxTreeParsing(tokenizedInput);
 
         // translate parsed mySqlQuery to mongoQuery
-        MyMongoQuery mappedFromSqlToMongoQuery = (MyMongoQuery) MapperService.MY_INSTANCE.mapQueryToMongo(parsedSqlQuery);
+        MyMongoQuery mappedFromSqlToMongoQuery = MapperService.MY_INSTANCE.mapQueryToMongo(parsedSqlQuery);
 
         // getting mongo db connection from connection service
         MongoClient mongoClient = MongoConnectionService.INSTANCE.provideConnection();
 
         // execute translatedQuery lambda to fetch result set
         List<List<String>> resultSet = mappedFromSqlToMongoQuery.executeMongoQuery(mongoClient);
+
+        //closing the connection after every client request
+        mongoClient.close();
 
         return resultSet;
     };

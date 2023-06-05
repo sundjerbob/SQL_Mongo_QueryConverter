@@ -5,8 +5,11 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import raf.project.app.parser.ast.ASTNode;
+import raf.project.app.parser.ast.clauses.FromClause;
 import raf.project.app.parser.ast.clauses.MyQuery;
+import raf.project.app.parser.ast.clauses.SelectClause;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Mapper implements MapperAPI {
@@ -15,7 +18,24 @@ public class Mapper implements MapperAPI {
 
     @Override
     public MyMongoQuery mapQueryToMongo(MyQuery myQuery) {
-        return null;
+        String fromTableName = null;
+
+        if(myQuery.getChildren().size() == 2 ) {
+            boolean selectCheck = false, fromCheck = false;
+            for (Object child : myQuery.getChildren()) {
+                if (child instanceof SelectClause) {
+                    if (((SelectClause) child).getChildren().size() == 1 && ((SelectClause) child).getChildren().get(0).equals("*"))
+                        selectCheck = true;
+                }
+                if(child instanceof FromClause) {
+                    if(((FromClause) child).getChildren().size() == 1 || ((FromClause) child).getChildren().size() == 2){
+                        fromTableName = (((FromClause) child).getChildren().get(0) instanceof String) ? (String) ((FromClause) child).getChildren().get(0) : "";
+                        fromCheck = true;
+                    }
+                }
+            }
+        }
+        return selectAllFromTable(fromTableName);
     }
 
 
@@ -38,7 +58,39 @@ public class Mapper implements MapperAPI {
      * attributes this structure is a table representation of a mongo collection of json documents.
      */
     private List<List<String>> extractResultSet(MongoCursor<Document> resultSetCursor) {
-        return null;
+
+        List<List<String>> resultSet = new ArrayList<>();
+
+        if(resultSetCursor.hasNext())
+             resultSet.add(new ArrayList<>(resultSetCursor.next().keySet()));
+
+        while (resultSetCursor.hasNext()) {
+            List<String> row = new ArrayList<>();
+
+            Document d = resultSetCursor.next();
+
+            System.out.println(d.toJson());
+
+            for(String k : d.keySet()) {
+
+                if(d.get(k)  instanceof Document) {
+                    Document doc = (Document) d.get(k);
+                    row.add(doc.toString());
+                }
+                else if(d.get(k) instanceof String) {
+                    System.out.println(d.getString(k));
+                    row.add(d.getString(k));
+                }
+                else if(d.get(k) instanceof Integer) {
+                    System.out.println(d.get(k));
+                    row.add( ((Integer)d.get(k)).toString() );
+                }
+            }
+            resultSet.add(row);
+
+        }
+        resultSetCursor.close();
+        return resultSet;
     }
 
 }
