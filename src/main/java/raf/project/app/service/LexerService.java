@@ -3,7 +3,7 @@ package raf.project.app.service;
 import raf.project.app.lexer.Lexer;
 import raf.project.app.lexer.LexerAPI;
 import raf.project.app.parser.symbol.SymbolStack;
-import raf.project.error.SyntaxError;
+import raf.project.app.error.SyntaxError;
 
 public enum LexerService {
 

@@ -4,13 +4,10 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
 import raf.project.app.parser.ast.clauses.MyQuery;
 import raf.project.app.parser.symbol.SymbolStack;
-import raf.project.app.query_mapper.MapperAPI;
 import raf.project.app.query_mapper.MapperAPI.MyMongoQuery;
-import raf.project.error.GrammarError;
-import raf.project.error.SemanticError;
-import raf.project.error.SyntaxError;
+import raf.project.app.error.GrammarError;
+import raf.project.app.error.SyntaxError;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

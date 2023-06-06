@@ -1,4 +1,4 @@
-package raf.project.error;
+package raf.project.app.error;
 
 public class GrammarError extends Exception{
 

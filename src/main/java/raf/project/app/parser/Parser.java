@@ -5,7 +5,7 @@ import raf.project.app.lexer.LexerAPI;
 import raf.project.app.parser.ast.ASTNode;
 import raf.project.app.parser.ast.clauses.*;
 import raf.project.app.parser.symbol.SymbolStack;
-import raf.project.error.GrammarError;
+import raf.project.app.error.GrammarError;
 
 import static raf.project.app.lexer.LexerAPI.TokenTable;
 import static raf.project.app.lexer.LexerAPI.TokenTable.*;

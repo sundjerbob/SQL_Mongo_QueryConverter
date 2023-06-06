@@ -3,7 +3,7 @@ package raf.project.app.parser.ast.clauses;
 import raf.project.app.lexer.LexerAPI;
 import raf.project.app.parser.ast.ASTNode;
 import raf.project.app.parser.symbol.Symbol;
-import raf.project.error.GrammarError;
+import raf.project.app.error.GrammarError;
 
 public class InArgumentList extends ASTNode {
 

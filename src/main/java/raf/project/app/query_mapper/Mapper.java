@@ -36,7 +36,10 @@ public class Mapper implements MapperAPI {
             }
         }
         return selectAllFromTable(fromTableName);
+
     }
+
+
 
 
     private MyMongoQuery selectAllFromTable(String collectionName) {
@@ -56,6 +59,7 @@ public class Mapper implements MapperAPI {
      * a result set and the list at the first index in the "parent"
      * list is a list of result sets collection fields names since the every document in the result collection has the same
      * attributes this structure is a table representation of a mongo collection of json documents.
+     * @author Tadija
      */
     private List<List<String>> extractResultSet(MongoCursor<Document> resultSetCursor) {
 

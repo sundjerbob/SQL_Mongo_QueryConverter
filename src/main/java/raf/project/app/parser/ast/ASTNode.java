@@ -1,7 +1,7 @@
 package raf.project.app.parser.ast;
 
 import raf.project.app.lexer.LexerAPI.TokenTable;
-import raf.project.error.GrammarError;
+import raf.project.app.error.GrammarError;
 
 import java.util.ArrayList;
 import java.util.List;
