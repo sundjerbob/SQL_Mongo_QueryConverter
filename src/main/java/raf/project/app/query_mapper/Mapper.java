@@ -4,13 +4,13 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import raf.project.app.parser.ast.ASTNode;
 import raf.project.app.parser.ast.clauses.FromClause;
 import raf.project.app.parser.ast.clauses.MyQuery;
 import raf.project.app.parser.ast.clauses.SelectClause;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Mapper implements MapperAPI {
 
@@ -20,15 +20,15 @@ public class Mapper implements MapperAPI {
     public MyMongoQuery mapQueryToMongo(MyQuery myQuery) {
         String fromTableName = null;
 
-        if(myQuery.getChildren().size() == 2 ) {
+        if (myQuery.getChildren().size() == 2) {
             boolean selectCheck = false, fromCheck = false;
             for (Object child : myQuery.getChildren()) {
                 if (child instanceof SelectClause) {
                     if (((SelectClause) child).getChildren().size() == 1 && ((SelectClause) child).getChildren().get(0).equals("*"))
                         selectCheck = true;
                 }
-                if(child instanceof FromClause) {
-                    if(((FromClause) child).getChildren().size() == 1 || ((FromClause) child).getChildren().size() == 2){
+                if (child instanceof FromClause) {
+                    if (((FromClause) child).getChildren().size() == 1 || ((FromClause) child).getChildren().size() == 2) {
                         fromTableName = (((FromClause) child).getChildren().get(0) instanceof String) ? (String) ((FromClause) child).getChildren().get(0) : "";
                         fromCheck = true;
                     }
@@ -60,34 +60,44 @@ public class Mapper implements MapperAPI {
     private List<List<String>> extractResultSet(MongoCursor<Document> resultSetCursor) {
 
         List<List<String>> resultSet = new ArrayList<>();
+        Set<String> keys = null;
 
-        if(resultSetCursor.hasNext())
-             resultSet.add(new ArrayList<>(resultSetCursor.next().keySet()));
 
-        while (resultSetCursor.hasNext()) {
-            List<String> row = new ArrayList<>();
+        if (resultSetCursor.hasNext()) {
+            Document document = resultSetCursor.next();
+            List<String> columnNames = new ArrayList<>();
 
-            Document d = resultSetCursor.next();
-
-            System.out.println(d.toJson());
-
-            for(String k : d.keySet()) {
-
-                if(d.get(k)  instanceof Document) {
-                    Document doc = (Document) d.get(k);
-                    row.add(doc.toString());
-                }
-                else if(d.get(k) instanceof String) {
-                    System.out.println(d.getString(k));
-                    row.add(d.getString(k));
-                }
-                else if(d.get(k) instanceof Integer) {
-                    System.out.println(d.get(k));
-                    row.add( ((Integer)d.get(k)).toString() );
-                }
+            for(String key : document.keySet()) {
+                if(key.equals("_id"))
+                    continue;
+                columnNames.add(key);
             }
-            resultSet.add(row);
 
+            resultSet.add(columnNames);// first row of the table for column names
+
+            while (resultSetCursor.hasNext()) {
+                List<String> row = new ArrayList<>();
+
+
+                System.out.println(document.toJson());
+
+                for (String key : columnNames) {
+                    if (document.get(key) instanceof Document) {
+                        Document doc = (Document) document.get(key);
+                        System.out.println("OVO JE DOKUMENT U DOKUMENTU");
+                        row.add(doc.toJson());
+                    } else if (document.get(key) instanceof String) {
+                        System.out.println(document.getString(key));
+                        row.add(document.getString(key));
+                    } else if (document.get(key) instanceof Integer) {
+                        System.out.println(document.get(key));
+                        row.add(((Integer) document.get(key)).toString());
+                    }
+                }
+
+                resultSet.add(row);// adding each row of a result set collection
+                document = resultSetCursor.next();
+            }
         }
         resultSetCursor.close();
         return resultSet;
