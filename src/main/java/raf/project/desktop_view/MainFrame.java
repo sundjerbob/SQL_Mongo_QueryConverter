@@ -1,5 +1,9 @@
 package raf.project.desktop_view;
 
+import raf.project.app.service.QueryService;
+import raf.project.error.GrammarError;
+import raf.project.error.SyntaxError;
+
 import javax.swing.*;
 import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.awt.*;
@@ -9,6 +13,7 @@ import java.awt.event.ActionListener;
 public class MainFrame extends JFrame {
 
     ResultTable table;
+    JTextArea queryArea;
 
     public MainFrame() {
 
@@ -17,61 +22,59 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        table = new ResultTable();
-        JScrollPane upperScrollPane = new JScrollPane();
-        JScrollPane lowerScrollPane = new JScrollPane(table);
-
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, upperScrollPane, lowerScrollPane);
-        splitPane.setDividerLocation(500);
-
-        getContentPane().setLayout(new FlowLayout());
-        getContentPane().add(splitPane);
-
+        getContentPane().setLayout(new BorderLayout());
 
         JLabel instructionLabel = new JLabel("Type in the query in SQL:");
-        instructionLabel.setBounds(50,100, 100,30);
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        panel.add(instructionLabel);
+        instructionLabel.setBounds(50,50, 50,30);
 
         JButton runButton = new JButton("Run query");
-        runButton.setBounds(50,50,100,30);
-        panel.add(runButton);
-
-        upperScrollPane.add(panel);
+        runButton.setBounds(50,50,50,30);
 
 
-        /*JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JPanel northPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 100, 10));
+        northPanel.add(instructionLabel);
+        northPanel.add(runButton);
+
+        getContentPane().add(northPanel, BorderLayout.NORTH);
+
+        queryArea = new JTextArea();
+        queryArea.setBounds(100, 100, 100, 100);
+        getContentPane().add(queryArea, BorderLayout.CENTER);
+
+        runButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    QueryService.MY_INSTANCE.runQuery(queryArea.getText());
+                } catch (SyntaxError | GrammarError ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        table = new ResultTable();
+        JScrollPane southPanel = new JScrollPane(table);
+        getContentPane().add(southPanel, BorderLayout.SOUTH);
+
+        //JScrollPane upperScrollPane = new JScrollPane();
+        //JScrollPane lowerScrollPane = new JScrollPane(table);
+
+        //JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, upperScrollPane, lowerScrollPane);
+        //splitPane.setDividerLocation(500);
+
+        //getContentPane().setLayout(new FlowLayout());
+       // getContentPane().add(splitPane);
 
 
 
-        
-
-
-        JButton runButton = new JButton("Run query");
-        runButton.setBounds(50,50,100,30);
-        getContentPane().add(runButton);
-
-        JTextArea queryArea = new JTextArea();
-        queryArea.setBounds(500, 500, 500, 500);
-        getContentPane().add(instructionLabel);
-
-
-        JScrollPane scrollPane = new JScrollPane(queryArea);
-        panel.add(scrollPane);
-
-
-        JLabel jTableLabel = new JLabel("ResultSet");
-        jTableLabel.setBounds(50,50, 100,30);
-
-
-        //JTable jTable = new JTable();
 
 
 
-         */
+
+        //upperScrollPane.add(panel);
+
+
+
         setVisible(true);
 
     }
