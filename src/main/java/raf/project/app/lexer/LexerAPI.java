@@ -43,6 +43,9 @@ public interface LexerAPI {
         GROUP("\\b(?i)GROUP\\b"),
         BY("\\b(?i)BY\\b"),
         ORDER("\\b(?i)ORDER\\b"),
+
+        ASC("\\b(?i)ASC\\b"),
+        DESC("\\b(?i)DESC\\b"),
         AND("\\b(?i)AND\\b"),
         OR("\\b(?i)OR\\b"),
         LEFT_PAR("\\("),
@@ -56,6 +59,11 @@ public interface LexerAPI {
         NOT_EQUAL("!="),
         COMMA(","),
         ASTERISK("\\*"),
+        COUNT("\\b(?i)COUNT\\b"),
+        MIN("\\b(?i)MIN\\b"),
+        MAX("\\b(?i)MAX\\b"),
+        AVG  ("\\b(?i)AVG\\b"),
+        SUM("\\b(?i)SUM\\b"),
         INT_CONST("\\d+"),
         STR_CONST("'[^']+'"),
         //ids go after keywords because id regex can catch any keyword, so keywords have priority and go first
