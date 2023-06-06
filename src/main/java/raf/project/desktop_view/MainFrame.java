@@ -82,28 +82,12 @@ public class MainFrame extends JFrame {
         getContentPane().add(queryArea, BorderLayout.CENTER);
 
 
-
         table = new ResultTable();
         JScrollPane southPanel = new JScrollPane(table);
         getContentPane().add(southPanel, BorderLayout.SOUTH);
 
-
-        //JScrollPane upperScrollPane = new JScrollPane();
-        //JScrollPane lowerScrollPane = new JScrollPane(table);
-
-        //JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, upperScrollPane, lowerScrollPane);
-        //splitPane.setDividerLocation(500);
-
-        //getContentPane().setLayout(new FlowLayout());
-       // getContentPane().add(splitPane);
-
-
-
-
-
-
-
-        //upperScrollPane.add(panel);
+        JPanel errorMessagePanel = new JPanel();
+        errorMessagePanel.
 
 
 
