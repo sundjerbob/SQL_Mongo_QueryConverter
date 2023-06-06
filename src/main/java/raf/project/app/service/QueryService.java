@@ -2,25 +2,22 @@ package raf.project.app.service;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
-import raf.project.app.parser.ast.clauses.MyQuery;
-import raf.project.app.parser.symbol.SymbolStack;
-import raf.project.app.query_mapper.MapperAPI.MyMongoQuery;
 import raf.project.app.error.GrammarError;
 import raf.project.app.error.SyntaxError;
+import raf.project.app.parser.ast.query.MyQuery;
+import raf.project.app.parser.symbol.SymbolStack;
+import raf.project.app.query_mapper.MapperAPI.MyMongoQuery;
 
 import java.util.List;
 
 /**
- *
- * @apiNote the wrapper service binding all provided functionalities for query mySQL to mongo translation,
- *  Mongo db connection, mongo db query execution, and finally result set extraction from provided result-set driver classes.
- *
  * @author Mina
+ * @apiNote the wrapper service binding all provided functionalities for query mySQL to mongo translation,
+ * Mongo db connection, mongo db query execution, and finally result set extraction from provided result-set driver classes.
  */
 public enum QueryService {
 
     MY_INSTANCE;
-
 
 
     public List<List<String>> runQuery(String inputStream) throws SyntaxError, GrammarError, MongoException {
@@ -44,7 +41,9 @@ public enum QueryService {
         mongoClient.close();
 
         return resultSet;
-    };
+    }
+
+    ;
 
 
 }

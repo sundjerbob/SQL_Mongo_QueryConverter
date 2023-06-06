@@ -7,9 +7,7 @@ import raf.project.app.db_connector.DBController;
 public enum MongoConnectionService {
     INSTANCE;
 
-
     final ConnectionAPI mongoDBConnection;
-
 
 
     MongoConnectionService() {

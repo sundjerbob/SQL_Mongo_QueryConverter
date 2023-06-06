@@ -1,5 +1,8 @@
 package raf.project.app;
 
+import raf.project.app.parser.symbol.SymbolStack;
+import raf.project.app.service.LexerService;
+import raf.project.app.service.ParserService;
 import raf.project.app.service.QueryService;
 import raf.project.desktop_view.MainFrame;
 
@@ -30,7 +33,7 @@ public class App {
         System.out.println("clean");
         //Test.runTest();*/
         //Test.runTest();
-        MainFrame mainFrame = new MainFrame();
+       /* MainFrame mainFrame = new MainFrame();
         String input = readFromConsole();
         try {
             mainFrame.getTable().displayResultSet(QueryService.MY_INSTANCE.runQuery(input));
@@ -42,7 +45,17 @@ public class App {
         // Test.runTest();
         // RepositoryService.executeMQLQuery(null);
 
+        */
+        String string = readFromConsole();
+        try {
+            SymbolStack stream = LexerService.MY_INSTANCE.performLexicalAnalysis(string);
+            System.out.println(ParserService.MY_INSTANCE.performAbstractSyntaxTreeParsing(stream));
 
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
     }
 

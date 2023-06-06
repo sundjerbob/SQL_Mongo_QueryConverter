@@ -9,15 +9,13 @@ public enum LexerService {
 
     MY_INSTANCE();
 
-
-
     final LexerAPI myLexicalAnalysisUnit;
 
     LexerService() {
         myLexicalAnalysisUnit = new Lexer();
     }
 
-    SymbolStack performLexicalAnalysis(String inputStream) throws SyntaxError {
+    public SymbolStack performLexicalAnalysis(String inputStream) throws SyntaxError {
         return myLexicalAnalysisUnit.tokenize(inputStream);
     };
 

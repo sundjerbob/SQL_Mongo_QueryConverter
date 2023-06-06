@@ -2,7 +2,7 @@ package raf.project.app.query_mapper;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
-import raf.project.app.parser.ast.clauses.MyQuery;
+import raf.project.app.parser.ast.query.MyQuery;
 
 import java.util.List;
 

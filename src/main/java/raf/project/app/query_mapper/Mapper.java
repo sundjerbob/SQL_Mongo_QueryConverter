@@ -5,7 +5,7 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import raf.project.app.parser.ast.clauses.FromClause;
-import raf.project.app.parser.ast.clauses.MyQuery;
+import raf.project.app.parser.ast.query.MyQuery;
 import raf.project.app.parser.ast.clauses.SelectClause;
 
 import java.util.ArrayList;

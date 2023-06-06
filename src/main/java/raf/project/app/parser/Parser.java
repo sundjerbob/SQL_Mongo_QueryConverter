@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import raf.project.app.lexer.LexerAPI;
 import raf.project.app.parser.ast.ASTNode;
 import raf.project.app.parser.ast.clauses.*;
+import raf.project.app.parser.ast.query.MyQuery;
 import raf.project.app.parser.symbol.SymbolStack;
 import raf.project.app.error.GrammarError;
 
@@ -170,28 +171,30 @@ public class Parser implements ParserAPI {
     // operatore parsiramo tako sto dodajemo njihov TableToken tokenType odnosno tip terminalnog simbola operatora (<,<=,>,>=,=,!=)
     whereClause = stack -> {
 
+        //mandatory keyword part
+        if (stack.nextUp().tokenType == WHERE) {
 
-        if (stack.nextUp().tokenType == WHERE) {//zgutaj where prvo
-
-            stack.swallow();
-            WhereClause where = new WhereClause();
+            stack.swallow();// swallow the keyword we don't need it will be recorded as an instance of WhereClause with its contents
+            WhereClause where = new WhereClause();// instantiate new WhereClause
 
             if (stack.nextUp().tokenType == ID)
-                where.addChild(stack.swallow().getValue());
+                where.addChild(stack.swallow().getValue());// adding where clause parameter
             else
                 throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected an id after keyword WHERE.");
 
             TokenTable operator = stack.nextUp().tokenType;
-            if ((operator == LESS_THAN) || (operator == LESS_THAN_OR_EQUAL)
+            if ((operator == LESS_THAN) || (operator == LESS_THAN_OR_EQUAL) // we need to catch mandatory where clause part that's operator
                     || operator == GREATER || operator == GREATER_OR_EQUAL || operator == EQUAL || operator == NOT_EQUAL) {
 
                 where.addChild(stack.swallow().tokenType);// swallow <, >, <=, >= , ==, != as operator
 
-                if (stack.nextUp().tokenType == SELECT) {
-                    System.out.println("vratio ga na dupli upit");
-                    return where; //vrati se na parsiranje selekta
+                if (stack.nextUp().tokenType == LEFT_PAR) {
+                    System.out.println("Parsing of one where clause is stopped and the sub-query parsing began.");
+                    return where; // return the WhereClause instance so the sub-query can be added to it as its child
                 }
 
+                // in case we did not encounter a sub-query, we continue parsing where clause that can be parametrized
+                // with INT_CONST, STR_CONST as the right operator side expression
                 else if(stack.nextUp().tokenType == INT_CONST)
                     where.addChild(Integer.parseInt(stack.swallow().getValue()));
 
@@ -203,13 +206,13 @@ public class Parser implements ParserAPI {
 
                 return where;
             }
-
+            //
             else if(operator == LIKE) {
 
                 where.addChild(stack.swallow().tokenType);// swallow LIKE as operator
 
                 if(stack.nextUp().tokenType == STR_CONST)
-                    where.addChild(stack.swallow().getValue());// swallow string constant as LIKE argument
+                    where.addChild(stack.swallow().getValue());// swallow string constant as LIKE that can only be STR_CONST
 
                 else
                     throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected string type constant as an argument of LIKE operation.");
@@ -217,14 +220,15 @@ public class Parser implements ParserAPI {
             }
             else if (operator == IN) {
                 where.addChild(stack.swallow().tokenType);// swallow IN operator
-                where.addChild(inArgumentList.parse(stack)); // continue with parsing inArgumentList array.... ad those
+                where.addChild(inArgumentList.parse(stack)); // continue with parsing inArgumentList array... ad those
             }
             else
                 throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected WHERE clause operator: (<, >, >=, <=, =, !=, IN, LIKE");
 
             return where;
         }
-        throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected keyword WHERE.");
+        else
+            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected keyword WHERE.");
 
     },
 
@@ -232,66 +236,114 @@ public class Parser implements ParserAPI {
     //todo: t1
     myQuery = stack -> {
 
-        //OBAVEZNI DEO SELECT FROM
+        // Mandatory parts of the query are select clause and from clause
         MyQuery myQuery = (MyQuery) new MyQuery().addChild(selectClause.parse(stack)).addChild(fromClause.parse(stack));
 
-        //OPCIONI DEO JOIN
+        // Optional join clause
         if (stack.nextUp().tokenType == JOIN) {
             myQuery.addChild(joinClause.parse(stack));
         }
-        //OPCIONI DEO WHERE PRVI
+        // Optional where clause
         if(stack.nextUp().tokenType == WHERE) {
+            // begin parsing first where clause in a parent query
             ASTNode firstWhere = whereClause.parse(stack);
 
-            if(stack.nextUp().tokenType == SELECT) {
-                System.out.println("u my kveriju poceo da parsira sledeci wheree");
-                firstWhere.addChild(selectClause.parse(stack)).addChild(fromClause.parse(stack));//progutano sve do whera
+            // In case of sub-query appearance in where,where clause parse is stopped on
+            // after the where operator is swallowed.
+            // So the next token in that case would be SELECT keyword
+            if(stack.nextUp().tokenType == LEFT_PAR) {
+                stack.swallow();// swallow parentheses it just signifies starting of a sub query
 
-                if(stack.nextUp().tokenType == WHERE)
-                    firstWhere.addChild(whereClause.parse(stack));//shere ce da zguta sve do eventualnog logickog vezznika
+                // like for "parent" query, the sub-query has to have mandatory select & from clause
+                firstWhere.addChild(selectClause.parse(stack)).addChild(fromClause.parse(stack));
 
-                if(stack.nextUp().tokenType == AND || stack.nextUp().tokenType == OR) {//veznik za 2
-                    stack.swallow(); //zgutaj and ili or veznik
-                    firstWhere.addChild(whereClause.parse(stack));
+                // optional first where in sub-query
+                if(stack.nextUp().tokenType == WHERE) {
+                    firstWhere.addChild(whereClause.parse(stack));// parse first
+
+                    if(stack.nextUp().tokenType == LEFT_PAR)
+                        throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". There cant be a sub query in another sub queries where clause.");
+
+                    // optional logic operator which connects first where cause with second where clause (in sub-query)
+                    if (stack.nextUp().tokenType == AND || stack.nextUp().tokenType == OR) {
+
+                        firstWhere.addChild(stack.swallow().tokenType); // adding logic operator between first and second where clause of a sub-query
+                        firstWhere.addChild(whereClause.parse(stack));// parse second in sub-query where
+
+                        if(stack.nextUp().tokenType == LEFT_PAR)
+                            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". There cant be a sub query in another sub queries where clause.");
+                    }
                 }
+                if(stack.nextUp().tokenType == RIGHT_PAR) {
+                    stack.swallow(); // swallow right parentheses that signify the ending of a sub query
+                }
+                else
+                    throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". There should be \")\" at the end of a sub query.");
+
+                myQuery.addChild(firstWhere); // adding the whole parent query first where clause
             }
 
-            if(stack.nextUp().tokenType == AND || stack.nextUp().tokenType == OR) {
-                stack.swallow(); //zgutaj and ili or veznik
-                firstWhere.addChild(whereClause.parse(stack));
-            }
-            myQuery.addChild(firstWhere);
+            //end of the first where clause
 
 
+            // trash can
             if(stack.nextUp().tokenType == WHERE)
                 throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected a logic operator ( AND , OR ) if you want to chain where clauses.");
 
-            //OPCIONI DEO WHERE DRUGI
+
+            //optional logic operator to chain first and second where clause in the parent query
             if(stack.nextUp().tokenType == AND || stack.nextUp().tokenType == OR) {
-                myQuery.addChild(stack.swallow().tokenType);
+
+                myQuery.addChild(stack.swallow().tokenType);// adding the logic operator between first and second where clause in a parent query
+                // begin parsing first where clause in a parent query
                 ASTNode secondWhere = whereClause.parse(stack);
 
-                if(stack.nextUp().tokenType == SELECT) {
+                // In case of sub-query appearance in where,where clause parse is stopped on
+                // after the where operator is swallowed.
+                // So the next token in that case would be SELECT keyword
+                if(stack.nextUp().tokenType == LEFT_PAR) {
+                    stack.swallow();// swallow parentheses it just signifies starting of a sub query
 
-                    secondWhere.addChild(selectClause).addChild(fromClause);//zgutalo je sve do wherea opcionog
+                    // like for "parent" query, the sub-query has to have mandatory select & from clause
+                    secondWhere.addChild(selectClause.parse(stack)).addChild(fromClause.parse(stack));
 
-                    if(stack.nextUp().tokenType == WHERE)//
-                        secondWhere.addChild(whereClause.parse(stack));
+                    // optional first where in sub-query
+                    if(stack.nextUp().tokenType == WHERE) {
+                        secondWhere.addChild(whereClause.parse(stack));// parse first
 
-                    if(stack.nextUp().tokenType == AND || stack.nextUp().tokenType == OR) {//second sub-query 2 chained where statements
-                        myQuery.addChild(stack.swallow().tokenType); //zgutaj and ili or
-                        secondWhere.addChild(whereClause.parse(stack));
+                        if(stack.nextUp().tokenType == LEFT_PAR)
+                            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". There cant be a sub query in another sub queries where clause.");
+
+                        // optional logic operator which connects first where cause with second where clause in(sub-query)
+                        if (stack.nextUp().tokenType == AND || stack.nextUp().tokenType == OR) {
+
+                            secondWhere.addChild(stack.swallow().tokenType); // adding logic operator between first and second where clause of a sub-query
+                            secondWhere.addChild(whereClause.parse(stack));// parse second in sub-query where
+
+                            if(stack.nextUp().tokenType == LEFT_PAR)
+                                throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". There cant be a sub query in another sub queries where clause.");
+                        }
                     }
+                    if(stack.nextUp().tokenType == RIGHT_PAR) {
+                        stack.swallow(); // swallow right parentheses that signify the ending of a sub query
+                    }
+                    else
+                        throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". There should be \")\" at the end of a sub query.");
+                    }
+                myQuery.addChild(secondWhere); // adding the whole parent query first where clause
 
-                }
-                myQuery.addChild(secondWhere);
             }
+
         }
 
-    //tacka zarez fali
-        if (stack.swallow().tokenType != SEMI_COLUMN)
+
+        //Semi-column missing from the ond of the query
+        if (stack.nextUp().tokenType != SEMI_COLUMN)
             throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected \";\".");
-    //nesto posle tacke zareza
+
+        stack.swallow(); // swallow the last char of input that's semi_column
+
+        //Some text is found after the query enclosing semi-column
         if(!stack.isEmpty())
             throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Nothing expected after query ending token. \";\".");
 

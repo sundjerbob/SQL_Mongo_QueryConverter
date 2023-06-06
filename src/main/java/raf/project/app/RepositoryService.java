@@ -1,6 +1,6 @@
 package raf.project.app;
 
-import raf.project.app.parser.ast.clauses.MyQuery;
+import raf.project.app.parser.ast.query.MyQuery;
 
 import java.util.List;
 

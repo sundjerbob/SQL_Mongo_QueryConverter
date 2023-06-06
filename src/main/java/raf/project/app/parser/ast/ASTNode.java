@@ -43,11 +43,11 @@ public class ASTNode {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("\nClause").append(this.getClass().getName()).append('\n').append("{").append('\n');
+        stringBuilder.append("\n").append(this.getClass().getName()).append('\n').append("{").append('\n');
 
         for (Object child : children) {
             if(child instanceof TokenTable)
-                stringBuilder.append("operetor: ").append(child).append('\n');
+                stringBuilder.append("\n").append("operetor: ").append(child).append('\n');
             else if(child instanceof Integer)
                 stringBuilder.append("Int konstanta: ").append(child).append('\n');
             else if(child instanceof String)

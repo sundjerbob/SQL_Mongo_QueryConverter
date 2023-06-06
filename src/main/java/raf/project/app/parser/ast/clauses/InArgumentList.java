@@ -33,13 +33,5 @@ public class InArgumentList extends ASTNode {
         return listType;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder str = new StringBuilder();
-        for(Object curr : children)
-        {
-           str.append(curr).append("\n");
-        }
-        return str.toString();
-    }
+
 }
