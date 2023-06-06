@@ -9,6 +9,8 @@ import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MainFrame extends JFrame {
 
@@ -25,34 +27,64 @@ public class MainFrame extends JFrame {
         getContentPane().setLayout(new BorderLayout());
 
         JLabel instructionLabel = new JLabel("Type in the query in SQL:");
-        instructionLabel.setBounds(50,50, 50,30);
+        instructionLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 17));
+        instructionLabel.setSize(50,30);
 
         JButton runButton = new JButton("Run query");
-        runButton.setBounds(50,50,50,30);
-
-
-        JPanel northPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 100, 10));
-        northPanel.add(instructionLabel);
-        northPanel.add(runButton);
-
-        getContentPane().add(northPanel, BorderLayout.NORTH);
-
-        queryArea = new JTextArea();
-        queryArea.setBounds(100, 100, 100, 100);
-        getContentPane().add(queryArea, BorderLayout.CENTER);
-
-        runButton.addActionListener(new ActionListener() {
+        runButton.setBackground(new Color(144, 213, 96));
+        runButton.setSize(100,50);
+        runButton.setFocusPainted(false);
+        runButton.setBorder(null);
+            runButton.setPreferredSize(new Dimension(100,25));
+        runButton.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 try {
 
                     table.displayResultSet(QueryService.MY_INSTANCE.runQuery(queryArea.getText()));
 
                 } catch (SyntaxError | GrammarError ex) {
                     ex.printStackTrace();
-                }
+                }            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                runButton.setBackground(new Color(144, 213, 96));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                runButton.setBackground(new Color(65, 143, 15));
+               // mouseClicked(e);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                runButton.setBackground(new Color(52, 103, 19));
+                runButton.setForeground(Color.WHITE);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                runButton.setBackground(new Color(144, 213, 96));
+                runButton.setForeground(Color.BLACK);
+
             }
         });
+
+        JPanel northPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 200, 20 ));
+        northPanel.setBackground(new Color(255, 255, 255, 86));
+
+        northPanel.add(instructionLabel);
+        northPanel.add(runButton);
+
+        getContentPane().add(northPanel, BorderLayout.NORTH);
+
+        queryArea = new JTextArea();
+        queryArea.setSize( 100, 100);
+        getContentPane().add(queryArea, BorderLayout.CENTER);
+
+
 
         table = new ResultTable();
         JScrollPane southPanel = new JScrollPane(table);

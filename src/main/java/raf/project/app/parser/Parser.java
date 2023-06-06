@@ -112,7 +112,12 @@ public class Parser implements ParserAPI {
 
     orderBy = stack -> {
         if(stack.nextUp().tokenType == ORDER){
+            stack.swallow();
             OrderByClause order = new OrderByClause();
+            if(stack.nextUp().tokenType == BY) {
+
+            }
+            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected one table name or table name followed by alias as JOIN clause.");
         }
         return null;
     },
