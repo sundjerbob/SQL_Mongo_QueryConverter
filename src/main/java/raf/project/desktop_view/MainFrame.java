@@ -45,7 +45,9 @@ public class MainFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    QueryService.MY_INSTANCE.runQuery(queryArea.getText());
+
+                    table.displayResultSet(QueryService.MY_INSTANCE.runQuery(queryArea.getText()));
+
                 } catch (SyntaxError | GrammarError ex) {
                     ex.printStackTrace();
                 }
@@ -55,6 +57,7 @@ public class MainFrame extends JFrame {
         table = new ResultTable();
         JScrollPane southPanel = new JScrollPane(table);
         getContentPane().add(southPanel, BorderLayout.SOUTH);
+
 
         //JScrollPane upperScrollPane = new JScrollPane();
         //JScrollPane lowerScrollPane = new JScrollPane(table);
