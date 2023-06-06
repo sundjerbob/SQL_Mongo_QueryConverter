@@ -3,6 +3,7 @@ package raf.project.app.parser.ast;
 import raf.project.app.lexer.LexerAPI.TokenTable;
 import raf.project.app.error.GrammarError;
 import raf.project.app.parser.ast.functions.Function;
+import raf.project.app.parser.symbol.Symbol;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,8 @@ public class ASTNode {
         if(this instanceof Function)
             stringBuilder.append("Function name:  ").append(((Function)this).getFunctionName().toString()).append('\n');
         for (Object child : children) {
+            if(child instanceof Symbol)
+                stringBuilder.append('\n').append(child.toString()).append('\n');
             if(child instanceof TokenTable)
                 stringBuilder.append("\n").append("operetor: ").append(child).append('\n');
             else if(child instanceof Integer)

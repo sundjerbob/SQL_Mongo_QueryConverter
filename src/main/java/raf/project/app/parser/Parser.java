@@ -31,14 +31,20 @@ public class Parser implements ParserAPI {
     @Override
     public ASTNode parse(@NotNull SymbolStack stack) throws GrammarError {
         try {
-            System.out.println(orderBy.parse(stack));
+            System.out.println(groupByClause.parse(stack));
             return new MyQuery();
 
         } catch (GrammarError error) {
             error.printStackTrace();
         }
         return null;
-    }    private final Reduction selectClause = stack -> {
+    }
+
+
+
+
+
+    private final Reduction selectClause = stack -> {
 
         if (stack.nextUp().tokenType == SELECT) {
 
@@ -66,14 +72,21 @@ public class Parser implements ParserAPI {
                 }
 
                 return select;
-            } else if (stack.nextUp().tokenType == ASTERISK) {
+            }
+            else if (stack.nextUp().tokenType == ASTERISK) {
+
                 if (stack.nextUp().getValue().equals("*"))
+
                     select.addChild(stack.swallow().getValue());
+
                 return select;
-            } else
+            }
+
+            else
                 throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected at least one column name or \"*\" as SELECT clause argument.");
 
-        } else
+        }
+        else
             throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected keyword SELECT.");
     },
 
@@ -129,6 +142,36 @@ public class Parser implements ParserAPI {
 
     },
 
+    groupByClause = stack -> {
+
+        if(stack.nextUp().tokenType != GROUP)
+            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected keyword GROUP");
+
+        stack.swallow();
+
+        if(stack.nextUp().tokenType != BY)
+            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected keyword BY after the keyword GROUP so the group by action could be done.");
+
+        stack.swallow();
+
+        GroupByClause groupByClause = new GroupByClause();
+
+        if(stack.nextUp().tokenType != ID)
+            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Group by argument expected, there has to be at leas one ID as argument or a list of IDs.");
+
+        groupByClause.addChild(stack.swallow().getValue());
+
+        while (stack.nextUp().tokenType == COMMA)
+        {
+            stack.swallow();
+            if(stack.nextUp().tokenType != ID)
+                throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Group by arguments list can only be list of ID-s.");
+
+            groupByClause.addChild(stack.swallow().getValue());
+        }
+        return groupByClause;
+
+    },
 
     aggregationFunction = stack -> {
         TokenTable nextUp = stack.nextUp().tokenType;
@@ -157,7 +200,7 @@ public class Parser implements ParserAPI {
     },
 
 
-    orderBy = stack -> {
+    orderByClause = stack -> {
         if (stack.nextUp().tokenType != ORDER)
             throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + " . Missing ORDER keyword.");
 
@@ -169,15 +212,15 @@ public class Parser implements ParserAPI {
         stack.swallow();
 
 
-        OrderByClause orderByClause = new OrderByClause();
+        OrderByClause orderBy = new OrderByClause();
 
         TokenTable nextUp = stack.nextUp().tokenType;
 
         if (nextUp == ID)
-            orderByClause.addChild(stack.swallow().getValue());
+            orderBy.addChild(stack.swallow().getValue());
 
         else if (nextUp == COUNT || nextUp == SUM || nextUp == AVG || nextUp == MAX || nextUp == MIN)
-            orderByClause.addChild(aggregationFunction.parse(stack));
+            orderBy.addChild(aggregationFunction.parse(stack));
 
         else
             throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + " . Order by clause must have one argument and it can be aggregation function or colum id.");
@@ -186,9 +229,9 @@ public class Parser implements ParserAPI {
         if (stack.nextUp().tokenType != ASC && stack.nextUp().tokenType != DESC)
             throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + " . Missing ASC or DESC operator of an ORDER BY statement.");
 
-        orderByClause.addChild(stack.swallow().tokenType);
+        orderBy.addChild(stack.swallow().tokenType);
 
-        return orderByClause;
+        return orderBy;
     },
 
     inArgumentList = stack -> {
