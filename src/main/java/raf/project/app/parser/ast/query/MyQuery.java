@@ -4,9 +4,7 @@ package raf.project.app.parser.ast.query;
 import raf.project.app.error.GrammarError;
 import raf.project.app.lexer.LexerAPI;
 import raf.project.app.parser.ast.ASTNode;
-import raf.project.app.parser.ast.clauses.FromClause;
-import raf.project.app.parser.ast.clauses.JoinClause;
-import raf.project.app.parser.ast.clauses.SelectClause;
+import raf.project.app.parser.ast.clauses.*;
 
 public class MyQuery extends ASTNode {
 
@@ -61,4 +59,19 @@ public class MyQuery extends ASTNode {
         return null;
     }
 
+    public GroupByClause getGroupByClause() {
+        for (Object child :children) {
+            if(child instanceof GroupByClause)
+                return (GroupByClause) child;
+        }
+        return null;
+    }
+
+    public OrderByClause getOrderByClause() {
+        for (Object child : children) {
+            if(child instanceof OrderByClause)
+                return (OrderByClause) child;
+        }
+        return null;
+    }
 }

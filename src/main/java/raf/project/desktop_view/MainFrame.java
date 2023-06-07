@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 public class MainFrame extends JFrame {
 
@@ -36,13 +37,18 @@ public class MainFrame extends JFrame {
         runButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                List<List<String>> resultSet = null;
                 try {
 
-                    table.displayResultSet(QueryService.MY_INSTANCE.runQuery(queryArea.getText()));
+                    resultSet = QueryService.MY_INSTANCE.runQuery(queryArea.getText());
 
-                } catch (SyntaxError | GrammarError ex) {
-                    ex.printStackTrace();
-                }            }
+                } catch (Exception exception) {
+
+                    JOptionPane.showConfirmDialog(MainFrame.this, exception.getMessage(), "Confirmation", JOptionPane.OK_OPTION);
+                }
+                if(resultSet != null)
+                    table.displayResultSet(resultSet);
+            }
 
             @Override
             public void mousePressed(MouseEvent e) {

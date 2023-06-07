@@ -5,6 +5,7 @@ import org.bson.conversions.Bson;
 import raf.project.app.lexer.LexerAPI;
 import raf.project.app.parser.ast.ASTNode;
 import raf.project.app.parser.ast.clauses.JoinClause;
+import raf.project.app.parser.ast.clauses.OrderByClause;
 import raf.project.app.parser.ast.clauses.SelectClause;
 import raf.project.app.parser.ast.query.MyQuery;
 
@@ -51,10 +52,9 @@ public class PipelineBuilder {
 
         Document projectDocument = new Document("$project", new Document());
 
-        if(selectClause.getChildren().size() == 1 && selectClause.getChildren().get(0).equals("*")) {
+        if (selectClause.getChildren().size() == 1 && selectClause.getChildren().get(0).equals("*")) {
             documents[5] = projectDocument;
-        }
-        else {
+        } else {
             for (Object selectArg : selectClause.getChildren()) {
                 if (selectArg instanceof String) {
                     projectDocument.get("$project", Document.class).append((String) selectArg, 1);
@@ -63,23 +63,32 @@ public class PipelineBuilder {
             }
             documents[5] = projectDocument;
         }
-        if(myQuery.getJoinClause() != null) {
+        if (myQuery.getJoinClause() != null) {
 
             JoinClause joinClause = myQuery.getJoinClause();
-            if(joinClause.getOnFunction() != null) {
+            if (joinClause.getOnFunction() != null) {
 
-                documents[1] = new Document("$lookup",
+                documents[2] = new Document("$lookup",
                         new Document("from", joinClause.getChildren().get(0))
-                                .append("localField", joinClause.getOnFunction().getFirstArg() )
-                                .append("foreignField", joinClause.getOnFunction().getSecondArg() )
-                                .append("as", myQuery.getFromTable() + "_" + myQuery.getJoinClause().getJoinedTable()));;
+                                .append("localField", joinClause.getOnFunction().getFirstArg())
+                                .append("foreignField", joinClause.getOnFunction().getSecondArg())
+                                .append("as", myQuery.getFromTable() + "_" + myQuery.getJoinClause().getJoinedTable()));
+                ;
             }
 
-            documents[5].get("$project", Document.class).append( myQuery.getFromTable() + "_" + myQuery.getJoinClause().getJoinedTable() + "." + selectClause.getChildren().get(0) , 1 );
+            documents[5].get("$project", Document.class).append(myQuery.getFromTable() + "_" + myQuery.getJoinClause().getJoinedTable() + "." + selectClause.getChildren().get(0), 1);
+            documents[4] = new Document("$unwind", '$' + myQuery.getFromTable() + "_" + myQuery.getJoinClause().getJoinedTable());
+
         }
 
-        documents[4] = new Document("$unwind", '$' + myQuery.getFromTable() + "_" + myQuery.getJoinClause().getJoinedTable());
-        //transfer to pipeline
+
+        OrderByClause orderByClause = myQuery.getOrderByClause();
+        if (orderByClause != null)
+        {
+            int flag = (orderByClause.getChildren().get(orderByClause.getChildren().size() - 1) == LexerAPI.TokenTable.ASC ) ? 1 : -1;
+
+            documents[3] = new Document("$sort", new Document( (String) orderByClause.getChildren().get(0) ,flag ) ) ;
+        }
         for(int i = 0; i < 6 ; i++) {
             if(documents[i] != null)
                 pipeLine.add(documents[i]);

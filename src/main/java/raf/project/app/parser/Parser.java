@@ -32,13 +32,10 @@ public class Parser implements ParserAPI {
 
     @Override
     public ASTNode parse(@NotNull SymbolStack stack) throws GrammarError {
-        try {
+
             return myQuery.parse(stack);
 
-        } catch (GrammarError error) {
-            error.printStackTrace();
-        }
-        return null;
+
     }
 
 
@@ -507,9 +504,15 @@ public class Parser implements ParserAPI {
                 myQuery.addChild(secondWhere); // adding the whole parent query first where clause
 
             }
-
         }
-
+        if(stack.nextUp().tokenType == GROUP)
+        {
+            myQuery.addChild(groupByClause.parse(stack));
+        }
+        if(stack.nextUp().tokenType == ORDER)
+        {
+            myQuery.addChild(orderByClause.parse(stack));
+        }
 
         //Semi-column missing from the ond of the query
         if (stack.nextUp().tokenType != SEMI_COLUMN)

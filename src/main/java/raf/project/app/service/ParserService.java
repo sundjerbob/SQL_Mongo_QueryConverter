@@ -17,6 +17,8 @@ public enum ParserService {
     }
 
     public ASTNode performAbstractSyntaxTreeParsing(SymbolStack tokenizedInputStream) throws GrammarError {
-        return myGrammarParsingComponent.parse(tokenizedInputStream);
+         return myGrammarParsingComponent.parse(tokenizedInputStream);
+
+
     }
 }
