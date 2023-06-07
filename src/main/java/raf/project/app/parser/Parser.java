@@ -35,7 +35,6 @@ public class Parser implements ParserAPI {
 
             return myQuery.parse(stack);
 
-
     }
 
 

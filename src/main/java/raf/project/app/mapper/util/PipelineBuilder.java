@@ -50,7 +50,7 @@ public class PipelineBuilder {
 
         SelectClause selectClause = myQuery.getSelectClause();
 
-        Document projectDocument = new Document("$project", new Document());
+        Document projectDocument = new Document("$project", new Document().append("_id",0));
 
         if (selectClause.getChildren().size() == 1 && selectClause.getChildren().get(0).equals("*")) {
             documents[5] = projectDocument;
