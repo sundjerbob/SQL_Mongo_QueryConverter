@@ -1,54 +1,21 @@
-package raf.project.app.query_mapper;
+package raf.project.app.mapper.packager;
 
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import raf.project.app.parser.ast.clauses.FromClause;
-import raf.project.app.parser.ast.query.MyQuery;
-import raf.project.app.parser.ast.clauses.SelectClause;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class Mapper implements MapperAPI {
 
-    public static String MY_DB = "bp_tim86";
-
-    @Override
-    public MyMongoQuery mapQueryToMongo(MyQuery myQuery) {
-        String fromTableName = null;
-
-        if (myQuery.getChildren().size() == 2) {
-            boolean selectCheck = false, fromCheck = false;
-            for (Object child : myQuery.getChildren()) {
-                if (child instanceof SelectClause) {
-                    if (((SelectClause) child).getChildren().size() == 1 && ((SelectClause) child).getChildren().get(0).equals("*"))
-                        selectCheck = true;
-                }
-                if (child instanceof FromClause) {
-                    if (((FromClause) child).getChildren().size() == 1 || ((FromClause) child).getChildren().size() == 2) {
-                        fromTableName = (((FromClause) child).getChildren().get(0) instanceof String) ? (String) ((FromClause) child).getChildren().get(0) : "";
-                        fromCheck = true;
-                    }
-                }
-            }
-        }
-        return selectAllFromTable(fromTableName);
-
-    }
-
-
-
-
-    private MyMongoQuery selectAllFromTable(String collectionName) {
-        return mongoClient -> {
-            MongoDatabase mongoDatabase = mongoClient.getDatabase(MY_DB);
-            MongoCollection<Document> documentMongoCollection = mongoDatabase.getCollection(collectionName);
-            return extractResultSet(documentMongoCollection.find().cursor());
-        };
-    }
+/**
+ * @author Mina
+ * @apiNote this class is used for extracting data from a mongo db result set,
+ * packaging its data in its respective string form using java util List,
+ * since we lose the mongo db query result wrapper instances when the
+ * MongoClient connection is closed.
+ */
+public class ResultExtractor {
 
     /**
      * This method extracts data from the result set <code>MongoCursor<Document></></code> into a List of result rows
@@ -61,7 +28,7 @@ public class Mapper implements MapperAPI {
      * attributes this structure is a table representation of a mongo collection of json documents.
      * @author Tadija
      */
-    private List<List<String>> extractResultSet(MongoCursor<Document> resultSetCursor) {
+    public static List<List<String>> extractResultSet(MongoCursor<Document> resultSetCursor) {
 
         List<List<String>> resultSet = new ArrayList<>();
         Set<String> keys = null;
@@ -71,8 +38,8 @@ public class Mapper implements MapperAPI {
             Document document = resultSetCursor.next();
             List<String> columnNames = new ArrayList<>();
 
-            for(String key : document.keySet()) {
-                if(key.equals("_id"))
+            for (String key : document.keySet()) {
+                if (key.equals("_id"))
                     continue;
                 columnNames.add(key);
             }
@@ -106,7 +73,4 @@ public class Mapper implements MapperAPI {
         resultSetCursor.close();
         return resultSet;
     }
-
 }
-
-

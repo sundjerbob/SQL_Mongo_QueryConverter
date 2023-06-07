@@ -1,24 +1,20 @@
 package raf.project.app.service;
 
 import raf.project.app.parser.ast.query.MyQuery;
-import raf.project.app.query_mapper.Mapper;
-import raf.project.app.query_mapper.MapperAPI.MyMongoQuery;
-import raf.project.app.query_mapper.MapperAPI;
+import raf.project.app.mapper.Mapper;
+import raf.project.app.mapper.MapperAPI.MyMongoQuery;
+import raf.project.app.mapper.MapperAPI;
 
 
 public enum MapperService {
 
     MY_INSTANCE;
 
-    final MapperAPI mySqlToMongoMappingUnit;
-    MapperService() {
-        mySqlToMongoMappingUnit = new Mapper();
 
-    }
 
     MyMongoQuery mapQueryToMongo(MyQuery myQuery){
 
-        return mySqlToMongoMappingUnit.mapQueryToMongo(myQuery);
+        return  new Mapper().mapQueryToMongo(myQuery);
     }
 
 

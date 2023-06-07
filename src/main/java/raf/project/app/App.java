@@ -33,20 +33,14 @@ public class App {
         System.out.println("clean");
         //Test.runTest();*/
         //Test.runTest();
-       /* MainFrame mainFrame = new MainFrame();
-        String input = readFromConsole();
-        try {
-            mainFrame.getTable().displayResultSet(QueryService.MY_INSTANCE.runQuery(input));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+       MainFrame mainFrame = new MainFrame();
+
 
         // Test.runTest();
         // RepositoryService.executeMQLQuery(null);
 
-        */
-        String string = readFromConsole();
+
+      /*  String string = readFromConsole();
         try {
             SymbolStack stream = LexerService.MY_INSTANCE.performLexicalAnalysis(string);
             System.out.println(ParserService.MY_INSTANCE.performAbstractSyntaxTreeParsing(stream));
@@ -55,7 +49,7 @@ public class App {
         catch (Exception e)
         {
             e.printStackTrace();
-        }
+        }*/
 
     }
 

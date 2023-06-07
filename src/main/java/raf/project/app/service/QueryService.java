@@ -6,7 +6,7 @@ import raf.project.app.error.GrammarError;
 import raf.project.app.error.SyntaxError;
 import raf.project.app.parser.ast.query.MyQuery;
 import raf.project.app.parser.symbol.SymbolStack;
-import raf.project.app.query_mapper.MapperAPI.MyMongoQuery;
+import raf.project.app.mapper.MapperAPI.MyMongoQuery;
 
 import java.util.List;
 

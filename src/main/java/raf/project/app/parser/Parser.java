@@ -31,8 +31,7 @@ public class Parser implements ParserAPI {
     @Override
     public ASTNode parse(@NotNull SymbolStack stack) throws GrammarError {
         try {
-            System.out.println(groupByClause.parse(stack));
-            return new MyQuery();
+            return myQuery.parse(stack);
 
         } catch (GrammarError error) {
             error.printStackTrace();

@@ -87,7 +87,6 @@ public class MainFrame extends JFrame {
         getContentPane().add(southPanel, BorderLayout.SOUTH);
 
         JPanel errorMessagePanel = new JPanel();
-        errorMessagePanel.
 
 
 

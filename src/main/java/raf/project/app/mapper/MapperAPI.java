@@ -1,4 +1,4 @@
-package raf.project.app.query_mapper;
+package raf.project.app.mapper;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
