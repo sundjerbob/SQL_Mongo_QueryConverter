@@ -6,7 +6,6 @@ import org.bson.Document;
 import raf.project.app.mapper.packager.ResultExtractor;
 import raf.project.app.mapper.util.PipelineBuilder;
 import raf.project.app.parser.ast.ASTNode;
-import raf.project.app.parser.ast.clauses.SelectClause;
 import raf.project.app.parser.ast.query.MyQuery;
 
 import java.util.ArrayList;
@@ -22,10 +21,10 @@ public class Mapper implements MapperAPI {
     @Override
     public MyMongoQuery mapQueryToMongo(MyQuery myQuery) {
 
-        //List<Document> queryPipeLine = new PipelineBuilder().buildPipeLine(myQuery);
+        List<Document> queryPipeLine = new PipelineBuilder().buildPipeLine(myQuery);
+        System.out.println(queryPipeLine);
 
-        List<Document> documents = new ArrayList<>();
-        return mongoClient -> ResultExtractor.extractResultSet(getMongoCollection(myQuery.getFromTable(),mongoClient).aggregate(documents).iterator());
+        return mongoClient -> ResultExtractor.extractResultSet(getMongoCollection(myQuery.getFromTable(),mongoClient).aggregate(queryPipeLine).iterator());
     }
 
 

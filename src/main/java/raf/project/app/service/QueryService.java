@@ -27,7 +27,7 @@ public enum QueryService {
 
         // abstract syntax tree root as instance of MyQuery
         MyQuery parsedSqlQuery = (MyQuery) ParserService.MY_INSTANCE.performAbstractSyntaxTreeParsing(tokenizedInput);
-
+        System.out.println(parsedSqlQuery);
         // translate parsed mySqlQuery to mongoQuery
         MyMongoQuery mappedFromSqlToMongoQuery = MapperService.MY_INSTANCE.mapQueryToMongo(parsedSqlQuery);
 

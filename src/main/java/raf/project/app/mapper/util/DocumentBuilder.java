@@ -5,7 +5,7 @@ import org.bson.Document;
 import java.util.List;
 
 public class DocumentBuilder {
-    private Document document;
+    private final Document document;
 
     public DocumentBuilder() {
         document = new Document();

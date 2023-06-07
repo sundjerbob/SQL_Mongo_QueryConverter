@@ -37,20 +37,26 @@ public class PipelineBuilder {
         return stages;
     }
 
-    /*
+
     public List<Document> buildPipeLine(ASTNode astNode) {
         List<Document> pipeLine = new ArrayList<>();
+        Document projectDocument = new Document("$project", new Document());
 
         for(Object node : astNode.getChildren()) {
-            if(node instanceof ASTNode)
-                pipeLine.addAll(buildPipeLine((ASTNode) node));
+            if(node instanceof SelectClause)
+            {
+                for(Object selectArg : ((SelectClause) node).getChildren()){
+                    if(selectArg instanceof String) {
+                        projectDocument.get("$project", Document.class).append((String) selectArg, 1);
+                    }
+                    else
+                        throw new RuntimeException("............0,0'");
+                }
+            }
         }
+        pipeLine.add(projectDocument);
+        return pipeLine;
 
-        PipelineBuilder pipelineBuilder = new PipelineBuilder();
-        if(astNode instanceof SelectClause) {
-            pipelineBuilder.project()
-        }
-
-    }*/
+    }
 
 }
