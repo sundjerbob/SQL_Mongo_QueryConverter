@@ -74,4 +74,12 @@ public class MyQuery extends ASTNode {
         }
         return null;
     }
+
+    public WhereClause getWhereClause() {
+        for (Object child : children) {
+            if(child instanceof WhereClause)
+                return (WhereClause) child;
+        }
+        return null;
+    }
 }

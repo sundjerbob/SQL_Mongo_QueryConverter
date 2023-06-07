@@ -1,5 +1,7 @@
 package raf.project.app;
 
+import raf.project.app.error.GrammarError;
+import raf.project.app.error.SyntaxError;
 import raf.project.app.parser.Parser;
 import raf.project.app.parser.ast.query.MyQuery;
 import raf.project.app.parser.symbol.SymbolStack;
@@ -12,7 +14,7 @@ import java.util.Scanner;
 
 public class App {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SyntaxError, GrammarError {
 
 
 
@@ -37,6 +39,7 @@ public class App {
 
         MainFrame mainFrame = new MainFrame();
 
+        //System.out.println(ParserService.MY_INSTANCE.performAbstractSyntaxTreeParsing(LexerService.MY_INSTANCE.performLexicalAnalysis(readFromConsole())));
 
 
 

@@ -409,17 +409,19 @@ public class Parser implements ParserAPI {
     myQuery = stack -> {
 
         // Mandatory parts of the query are select clause and from clause
-        MyQuery myQuery = (MyQuery) new MyQuery().addChild(selectClause.parse(stack)).addChild(fromClause.parse(stack));
+        MyQuery query = (MyQuery) new MyQuery().addChild(selectClause.parse(stack)).addChild(fromClause.parse(stack));
 
         // Optional join clause
         if (stack.nextUp().tokenType == JOIN) {
-            myQuery.addChild(joinClause.parse(stack));
+            query.addChild(joinClause.parse(stack));
         }
         // Optional where clause
         if (stack.nextUp().tokenType == WHERE) {
+            System.out.println("VIDEO JE WHERE");
             // begin parsing first where clause in a parent query
             ASTNode firstWhere = whereClause.parse(stack);
-
+            //adding to be sure
+            query.addChild(firstWhere);
             // In case of sub-query appearance in where,where clause parse is stopped on
             // after the where operator is swallowed.
             // So the next token in that case would be SELECT keyword
@@ -451,7 +453,7 @@ public class Parser implements ParserAPI {
                 } else
                     throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". There should be \")\" at the end of a sub query.");
 
-                myQuery.addChild(firstWhere); // adding the whole parent query first where clause
+                //query.addChild(firstWhere); // adding the whole parent query first where clause
             }
 
             //end of the first where clause
@@ -465,7 +467,7 @@ public class Parser implements ParserAPI {
             //optional logic operator to chain first and second where clause in the parent query
             if (stack.nextUp().tokenType == AND || stack.nextUp().tokenType == OR) {
 
-                myQuery.addChild(stack.swallow().tokenType);// adding the logic operator between first and second where clause in a parent query
+                query.addChild(stack.swallow().tokenType);// adding the logic operator between first and second where clause in a parent query
                 // begin parsing first where clause in a parent query
                 ASTNode secondWhere = whereClause.parse(stack);
 
@@ -500,17 +502,17 @@ public class Parser implements ParserAPI {
                     } else
                         throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". There should be \")\" at the end of a sub query.");
                 }
-                myQuery.addChild(secondWhere); // adding the whole parent query first where clause
+                query.addChild(secondWhere); // adding the whole parent query first where clause
 
             }
         }
         if(stack.nextUp().tokenType == GROUP)
         {
-            myQuery.addChild(groupByClause.parse(stack));
+            query.addChild(groupByClause.parse(stack));
         }
         if(stack.nextUp().tokenType == ORDER)
         {
-            myQuery.addChild(orderByClause.parse(stack));
+            query.addChild(orderByClause.parse(stack));
         }
 
         //Semi-column missing from the ond of the query
@@ -524,7 +526,7 @@ public class Parser implements ParserAPI {
             throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Nothing expected after query ending token. \";\".");
 
 
-        return myQuery;
+        return query;
 
     };
 

@@ -1,5 +1,7 @@
 package raf.project.app.mapper.util;
 
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import raf.project.app.lexer.LexerAPI;
@@ -7,6 +9,7 @@ import raf.project.app.parser.ast.ASTNode;
 import raf.project.app.parser.ast.clauses.JoinClause;
 import raf.project.app.parser.ast.clauses.OrderByClause;
 import raf.project.app.parser.ast.clauses.SelectClause;
+import raf.project.app.parser.ast.clauses.WhereClause;
 import raf.project.app.parser.ast.query.MyQuery;
 
 import java.util.ArrayList;
@@ -81,6 +84,31 @@ public class PipelineBuilder {
 
         }
 
+        WhereClause whereClause = myQuery.getWhereClause();
+        if(whereClause != null) {
+            switch (whereClause.getOperator())
+            {
+                case EQUAL:
+                    documents[0] = new Document("$match", Filters.eq((String) whereClause.getChildren().get(0), whereClause.getChildren().get(2)));
+                    break;
+                case LESS_THAN:
+                    documents[0] = new Document("$match", Filters.lt((String) whereClause.getChildren().get(0), whereClause.getChildren().get(2)));
+                    break;
+                case GREATER:
+                    documents[0] = new Document("$match", Filters.gt((String) whereClause.getChildren().get(0), whereClause.getChildren().get(2)));
+                    break;
+                case NOT_EQUAL:
+                    documents[0] = new Document("$match", Filters.ne((String) whereClause.getChildren().get(0), whereClause.getChildren().get(2)));
+                    break;
+                case GREATER_OR_EQUAL:
+                    documents[0] = new Document("$match", Filters.gte((String) whereClause.getChildren().get(0), whereClause.getChildren().get(2)));
+                    break;
+                case LESS_THAN_OR_EQUAL:
+                    documents[1] = new Document("$match", Filters.lte((String) whereClause.getChildren().get(0), whereClause.getChildren().get(2)));
+                    break;
+            }
+        }
+
 
         OrderByClause orderByClause = myQuery.getOrderByClause();
         if (orderByClause != null)
@@ -93,7 +121,7 @@ public class PipelineBuilder {
             if(documents[i] != null)
                 pipeLine.add(documents[i]);
         }
-
+        System.out.println(pipeLine);
         return pipeLine;
 
     }
