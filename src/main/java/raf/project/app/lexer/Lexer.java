@@ -1,13 +1,14 @@
 package raf.project.app.lexer;
 
 import org.jetbrains.annotations.NotNull;
+import raf.project.app.error.SyntaxError;
 import raf.project.app.parser.symbol.SymbolStack;
 import raf.project.app.parser.symbol.Symbol;
 
 public class Lexer implements LexerAPI {
 
     @Override
-    public SymbolStack tokenize(@NotNull String input) {
+    public SymbolStack tokenize(@NotNull String input) throws SyntaxError {
 
         SymbolStack tokenizedInput = new SymbolStack();
         StringBuilder lexemeBuilder = new StringBuilder();
@@ -37,7 +38,7 @@ public class Lexer implements LexerAPI {
 
                     //if we read a word, and it does not match any of the syntax table tokens than we throw an error
                     else
-                        return null;
+                        throw new SyntaxError("Lexeme:  " + lexemeBuilder + " couldn't be matched with any syntax token." );
                 }
 
                 //we don't build words out of white-space if we got in this branch,
@@ -56,7 +57,7 @@ public class Lexer implements LexerAPI {
             if( ( token = TokenTable.matchToken(lexemeBuilder.toString()) ) != null)
                 tokenizedInput.pushToBottom(new Symbol(token, lexemeBuilder.toString()) );
             else
-                return null;
+                throw new SyntaxError("Lexeme:  " + lexemeBuilder + "couldn't be matched with any syntax token." );
         }
 
         return  tokenizedInput;

@@ -1,5 +1,7 @@
 package raf.project.app;
 
+import raf.project.app.parser.Parser;
+import raf.project.app.parser.ast.query.MyQuery;
 import raf.project.app.parser.symbol.SymbolStack;
 import raf.project.app.service.LexerService;
 import raf.project.app.service.ParserService;
@@ -11,18 +13,19 @@ import java.util.Scanner;
 public class App {
 
     public static void main(String[] args) {
-        // Test.runTest();
-        /*LexerAPI lexer = new Lexer();
+
+
 
         String input = readFromConsole();
-        SymbolStack stack = lexer.tokenize(input);
 
-        ParserAPI parser = new Parser();
+
+
 
         try {
-            ASTNode myQuery = parser.parse(stack);
-            if(myQuery == null)
-                System.out.println("MY KVERI TI JE NULA");
+
+            SymbolStack stack = LexerService.MY_INSTANCE.performLexicalAnalysis(input);
+            System.out.println(stack);
+            MyQuery myQuery = (MyQuery) ParserService.MY_INSTANCE.performAbstractSyntaxTreeParsing(stack);
             System.out.println(myQuery);
 
 
@@ -33,7 +36,7 @@ public class App {
         System.out.println("clean");
         //Test.runTest();*/
         //Test.runTest();
-       MainFrame mainFrame = new MainFrame();
+       //MainFrame mainFrame = new MainFrame();
 
 
         // Test.runTest();

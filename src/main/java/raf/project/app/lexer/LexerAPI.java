@@ -1,5 +1,6 @@
 package raf.project.app.lexer;
 
+import raf.project.app.error.SyntaxError;
 import raf.project.app.parser.ParserAPI;
 import raf.project.app.parser.symbol.SymbolStack;
 
@@ -13,7 +14,7 @@ import raf.project.app.parser.symbol.SymbolStack;
 public interface LexerAPI {
 
 
-    SymbolStack tokenize(String input);
+    SymbolStack tokenize(String input) throws SyntaxError;
 
 
     /**
@@ -67,7 +68,7 @@ public interface LexerAPI {
         INT_CONST("\\d+"),
         STR_CONST("'[^']+'"),
         //ids go after keywords because id regex can catch any keyword, so keywords have priority and go first
-        ID("(?=.*[a-zA-Z])[a-zA-Z0-9_]*[a-zA-Z][a-zA-Z0-9_]*");
+        ID("[_a-zA-Z0-9\\\\.]+");
 
         private final String lexemeRegex;
 

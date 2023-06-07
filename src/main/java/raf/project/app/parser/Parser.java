@@ -6,6 +6,8 @@ import raf.project.app.lexer.LexerAPI;
 import raf.project.app.parser.ast.ASTNode;
 import raf.project.app.parser.ast.clauses.*;
 import raf.project.app.parser.ast.functions.Function;
+import raf.project.app.parser.ast.functions.OnFunction;
+import raf.project.app.parser.ast.functions.UsingFunction;
 import raf.project.app.parser.ast.query.MyQuery;
 import raf.project.app.parser.symbol.SymbolStack;
 
@@ -116,6 +118,70 @@ public class Parser implements ParserAPI {
 
     },
 
+    onJoinArg = stack -> {
+        if(stack.nextUp().tokenType != ON)
+            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected keyword ON.");
+
+        stack.swallow();
+
+        OnFunction onFunction = new OnFunction();
+
+        if(stack.nextUp().tokenType != LEFT_PAR)
+            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Missing \"(\" after the keyword ON.");
+
+        stack.swallow();
+
+        if(stack.nextUp().tokenType != ID)
+            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Missing an ID as the first argument of ON function. ");
+
+        onFunction.addChild(stack.swallow());
+
+        TokenTable operator = stack.nextUp().tokenType;
+
+        if( operator != LESS_THAN && operator != GREATER && operator != EQUAL)
+            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". ON function must have an operator that can be <, > or = . ");
+
+        onFunction.addChild(stack.swallow().getTokenType());
+
+        if(stack.nextUp().tokenType != ID)
+            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Missing an ID as the second argument of ON function. ");
+
+        onFunction.addChild(stack.swallow().getValue());
+
+        if(stack.nextUp().tokenType != RIGHT_PAR)
+            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected \")\" as an enclosing token for the ON function argument.");
+        stack.swallow();
+
+        return onFunction;
+
+    },
+
+    usingJoinArg = stack -> {
+        if(stack.nextUp().tokenType != USING)
+            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected keyword USING.");
+
+        stack.swallow();
+
+        if(stack.nextUp().tokenType != LEFT_PAR)
+            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected \"(\" after key word USING.");
+
+        stack.swallow();
+
+        UsingFunction usingFunction = new UsingFunction();
+
+        if(stack.nextUp().tokenType != ID)
+            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected an ID as USING function argument.");
+
+        usingFunction.addChild(stack.swallow().getValue());//adding an ID
+
+        if(stack.nextUp().tokenType != RIGHT_PAR)
+            throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected \")\" as an enclosing token for the USING function argument.");
+
+        stack.swallow();
+
+        return usingFunction;
+    },
+
     //todo: t1
     joinClause = stack -> {
         if (stack.nextUp().getTokenType() == JOIN) {
@@ -124,19 +190,26 @@ public class Parser implements ParserAPI {
             stack.swallow();
             JoinClause join = new JoinClause();
 
-            if (stack.nextUp().tokenType == ID) {
-                System.out.println(" Uvation  ID " + stack.nextUp().getValue());
+            if (stack.nextUp().tokenType != ID)
+                throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Join clause must have an argument ; table name or table name and alias.");
 
-                join.addChild(stack.swallow().getValue());
-            }
-            //balias
-            if (stack.nextUp().tokenType == ID) {
-                System.out.println(" Uvation  BALIAS " + stack.nextUp().getValue());
+            join.addChild(stack.swallow().getValue());
+
+            if (stack.nextUp().tokenType == ID)
                 join.addChild(stack.swallow().getValue());
 
-            }
+            if(stack.nextUp().tokenType == ON)
+                join.addChild(onJoinArg.parse(stack));
+
+            else if (stack.nextUp().tokenType == USING)
+                join.addChild(usingJoinArg.parse(stack));
+
+            else
+                throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Join clause must have \"ON\" or \"USING\" expression as the second argument.");
+
             return join;
-        } else
+        }
+        else
             throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Expected one table name or table name followed by alias as JOIN clause.");
 
     },
