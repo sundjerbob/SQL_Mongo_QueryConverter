@@ -16,7 +16,7 @@ public class App {
 
 
 
-        String input = readFromConsole();
+        /*String input = readFromConsole();
 
 
 
@@ -33,26 +33,12 @@ public class App {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("clean");
-        //Test.runTest();*/
-        //Test.runTest();
-       //MainFrame mainFrame = new MainFrame();
+        System.out.println("clean");*/
+
+        MainFrame mainFrame = new MainFrame();
 
 
-        // Test.runTest();
-        // RepositoryService.executeMQLQuery(null);
 
-
-      /*  String string = readFromConsole();
-        try {
-            SymbolStack stream = LexerService.MY_INSTANCE.performLexicalAnalysis(string);
-            System.out.println(ParserService.MY_INSTANCE.performAbstractSyntaxTreeParsing(stream));
-
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }*/
 
     }
 

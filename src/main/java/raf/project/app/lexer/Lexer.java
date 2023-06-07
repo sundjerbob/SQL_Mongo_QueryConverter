@@ -57,7 +57,7 @@ public class Lexer implements LexerAPI {
             if( ( token = TokenTable.matchToken(lexemeBuilder.toString()) ) != null)
                 tokenizedInput.pushToBottom(new Symbol(token, lexemeBuilder.toString()) );
             else
-                throw new SyntaxError("Lexeme:  " + lexemeBuilder + "couldn't be matched with any syntax token." );
+                throw new SyntaxError("Lexeme:  " + lexemeBuilder + " couldn't be matched with any syntax token." );
         }
 
         return  tokenizedInput;

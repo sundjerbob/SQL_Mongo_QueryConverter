@@ -10,14 +10,8 @@ import java.util.List;
 
 public class ASTNode {
     private TokenTable tokenType;
-    private String lexemeValue;
     protected List<Object> children;
 
-    public ASTNode(TokenTable tokenType, String lexemeValue) {
-        this.tokenType = tokenType;
-        this.lexemeValue = lexemeValue;
-        this.children = new ArrayList<>();
-    }
 
     public ASTNode(){
         children = new ArrayList<>();
@@ -30,9 +24,6 @@ public class ASTNode {
         this.tokenType = tokenType;
     }
 
-    public String getLexemeValue() {
-        return lexemeValue;
-    }
 
     public List<?> getChildren() {
         return children;

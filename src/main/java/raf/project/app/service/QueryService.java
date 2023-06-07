@@ -21,26 +21,41 @@ public enum QueryService {
 
 
     public List<List<String>> runQuery(String inputStream) throws SyntaxError, GrammarError, MongoException {
+        try {
+            // making stack of tokens to parse abstract tree nodes from it
+            SymbolStack tokenizedInput = LexerService.MY_INSTANCE.performLexicalAnalysis(inputStream);
 
-        // making stack of tokens to parse abstract tree nodes from it
-        SymbolStack tokenizedInput = LexerService.MY_INSTANCE.performLexicalAnalysis(inputStream);
+            try{
+                // abstract syntax tree root as instance of MyQuery
+                MyQuery parsedSqlQuery = (MyQuery) ParserService.MY_INSTANCE.performAbstractSyntaxTreeParsing(tokenizedInput);
 
-        // abstract syntax tree root as instance of MyQuery
-        MyQuery parsedSqlQuery = (MyQuery) ParserService.MY_INSTANCE.performAbstractSyntaxTreeParsing(tokenizedInput);
-        System.out.println(parsedSqlQuery);
-        // translate parsed mySqlQuery to mongoQuery
-        MyMongoQuery mappedFromSqlToMongoQuery = MapperService.MY_INSTANCE.mapQueryToMongo(parsedSqlQuery);
+                System.out.println(parsedSqlQuery);
 
-        // getting mongo db connection from connection service
-        MongoClient mongoClient = MongoConnectionService.INSTANCE.provideConnection();
 
-        // execute translatedQuery lambda to fetch result set
-        List<List<String>> resultSet = mappedFromSqlToMongoQuery.executeMongoQuery(mongoClient);
+                // translate parsed mySqlQuery to mongoQuery
+                MyMongoQuery mappedFromSqlToMongoQuery = MapperService.MY_INSTANCE.mapQueryToMongo(parsedSqlQuery);
 
-        //closing the connection after every client request
-        mongoClient.close();
+                // getting mongo db connection from connection service
+                MongoClient mongoClient = MongoConnectionService.INSTANCE.provideConnection();
 
-        return resultSet;
+                // execute translatedQuery lambda to fetch result set
+                List<List<String>> resultSet = mappedFromSqlToMongoQuery.executeMongoQuery(mongoClient);
+
+                //closing the connection after every client request
+                mongoClient.close();
+
+                return resultSet;
+
+            } catch (GrammarError error) {
+                throw error;
+            }
+        }
+        catch (SyntaxError error) {
+            throw error;
+        }
+
+
+
     }
 
     ;

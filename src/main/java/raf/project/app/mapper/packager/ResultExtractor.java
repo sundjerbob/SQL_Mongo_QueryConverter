@@ -55,9 +55,10 @@ public class ResultExtractor {
                 for (String key : columnNames) {
                     if (document.get(key) instanceof Document) {
                         Document doc = (Document) document.get(key);
-                        System.out.println("OVO JE DOKUMENT U DOKUMENTU");
-                        row.add(doc.toJson());
-                    } else if (document.get(key) instanceof String) {
+
+                        row.add(doc.getString(doc.keySet().iterator().next()));
+                    }
+                    else if (document.get(key) instanceof String) {
                         System.out.println(document.getString(key));
                         row.add(document.getString(key));
                     } else if (document.get(key) instanceof Integer) {

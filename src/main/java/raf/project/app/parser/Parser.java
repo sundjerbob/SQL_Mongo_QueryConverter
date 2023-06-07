@@ -134,7 +134,7 @@ public class Parser implements ParserAPI {
         if(stack.nextUp().tokenType != ID)
             throw new GrammarError("Unexpected argument: " + stack.nextUp().getValue() + ". Missing an ID as the first argument of ON function. ");
 
-        onFunction.addChild(stack.swallow());
+        onFunction.addChild(stack.swallow().getValue());
 
         TokenTable operator = stack.nextUp().tokenType;
 
